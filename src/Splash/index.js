@@ -1,7 +1,15 @@
 import {StyleSheet, Text, View, Dimensions, Image} from 'react-native';
-import React from 'react';
+import React, {useEffect} from 'react';
 
-const splashScreen = () => {
+const SplashScreen = ({navigation}) => {
+  useEffect(() => {
+    let myTimeout = setTimeout(() => {
+      navigation.navigate('Mobile');
+    }, 1500);
+
+    return () => clearTimeout(myTimeout);
+  }, []);
+
   return (
     <View style={styles.container}>
       <Image source={require('./assests/logo3.png')} style={styles.mainLogo} />
@@ -39,7 +47,7 @@ const splashScreen = () => {
   );
 };
 
-export default splashScreen;
+export default SplashScreen;
 
 const styles = StyleSheet.create({
   container: {

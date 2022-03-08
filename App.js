@@ -1,6 +1,6 @@
 import {StyleSheet, Text, View, StatusBar} from 'react-native';
 import React, {useEffect} from 'react';
-import SplashScreen from './src/Splash/index';
+import Routes from './Routes';
 const App = () => {
   return (
     <>
@@ -11,7 +11,8 @@ const App = () => {
         translucent={true}
         animated={true}
       />
-      <SplashScreen />
+
+      <Routes />
     </>
   );
 };
