@@ -9,8 +9,10 @@ import {
 } from 'react-native';
 import React from 'react';
 import Icon from 'react-native-vector-icons/Ionicons';
+import {useNavigation} from '@react-navigation/native';
 
 const NameScreen = () => {
+  const navigation = useNavigation();
   return (
     <View style={{flex: 1, backgroundColor: 'white'}}>
       <View
@@ -55,7 +57,13 @@ const NameScreen = () => {
           top: Dimensions.get('screen').height / 2.4,
           left: Dimensions.get('screen').width / 20,
         }}>
-        <Text style={{color: 'black', fontSize: 15, fontWeight: '500'}}>
+        <Text
+          style={{
+            color: 'black',
+            fontSize: 15,
+            fontWeight: '500',
+            fontFamily: 'ErasMediumITC',
+          }}>
           Enter your business name
         </Text>
       </View>
@@ -82,6 +90,7 @@ const NameScreen = () => {
             //borderColor: 'black',
             color: 'black',
             fontSize: 18,
+            fontFamily: 'ErasMediumITC',
           }}
         />
       </View>
@@ -94,7 +103,13 @@ const NameScreen = () => {
           top: Dimensions.get('screen').height / 1.87,
           left: Dimensions.get('screen').width / 20,
         }}>
-        <Text style={{color: 'black', fontSize: 15, fontWeight: '500'}}>
+        <Text
+          style={{
+            color: 'black',
+            fontSize: 15,
+            fontWeight: '500',
+            fontFamily: 'ErasMediumITC',
+          }}>
           Enter your name
         </Text>
       </View>
@@ -121,6 +136,7 @@ const NameScreen = () => {
             //borderColor: 'black',
             color: 'black',
             fontSize: 18,
+            fontFamily: 'ErasMediumITC',
           }}
         />
       </View>
@@ -133,7 +149,13 @@ const NameScreen = () => {
           top: Dimensions.get('screen').height / 1.53,
           left: Dimensions.get('screen').width / 20,
         }}>
-        <Text style={{color: 'black', fontSize: 15, fontWeight: '500'}}>
+        <Text
+          style={{
+            color: 'black',
+            fontSize: 15,
+            fontWeight: '500',
+            fontFamily: 'ErasMediumITC',
+          }}>
           Enter your email id
         </Text>
       </View>
@@ -160,6 +182,7 @@ const NameScreen = () => {
             //borderColor: 'black',
             color: 'black',
             fontSize: 18,
+            fontFamily: 'ErasMediumITC',
           }}
         />
       </View>
@@ -175,7 +198,9 @@ const NameScreen = () => {
           //right: 10,
           top: Dimensions.get('screen').height / 1.25,
         }}>
-        <TouchableOpacity activeOpacity={0.5}>
+        <TouchableOpacity
+          activeOpacity={0.5}
+          onPress={() => navigation.navigate('Main')}>
           <Icon
             name="arrow-forward-outline"
             color="black"
@@ -199,6 +224,7 @@ const NameScreen = () => {
             fontSize: 12,
             textAlign: 'center',
             fontWeight: '300',
+            fontFamily: 'ErasMediumITC',
           }}>
           By Creating on account you agree to our Terms of Service and Privacy
           Policy

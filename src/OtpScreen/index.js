@@ -51,7 +51,13 @@ const OtpScreen = () => {
           top: Dimensions.get('screen').height / 1.8,
           left: Dimensions.get('screen').width / 19,
         }}>
-        <Text style={{color: '#FFC300', fontSize: 10, fontWeight: '300'}}>
+        <Text
+          style={{
+            color: '#FFC300',
+            fontSize: 10,
+            fontWeight: '300',
+            fontFamily: 'ErasMediumITC',
+          }}>
           Mobile Verification
         </Text>
       </View>
@@ -63,7 +69,13 @@ const OtpScreen = () => {
           top: Dimensions.get('screen').height / 1.75,
           left: Dimensions.get('screen').width / 20,
         }}>
-        <Text style={{color: 'black', fontSize: 18, fontWeight: '600'}}>
+        <Text
+          style={{
+            color: 'black',
+            fontSize: 18,
+            fontWeight: '600',
+            fontFamily: 'ErasMediumITC',
+          }}>
           Enter your OTP code below
         </Text>
       </View>
@@ -225,6 +237,7 @@ const OtpScreen = () => {
             fontSize: 12,
             textAlign: 'center',
             fontWeight: '300',
+            fontFamily: 'ErasMediumITC',
           }}>
           By Creating on account you agree to our Terms of Service and Privacy
           Policy.
@@ -244,5 +257,6 @@ const styles = StyleSheet.create({
     fontSize: 20,
     //backgroundColor: 'grey',
     color: 'black',
+    fontFamily: 'ErasMediumITC',
   },
 });

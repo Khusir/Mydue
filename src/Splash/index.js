@@ -80,6 +80,7 @@ const styles = StyleSheet.create({
   footerText: {
     color: 'black',
     alignSelf: 'center',
-    fontSize: 10,
+    fontSize: 11,
+    fontFamily: 'ErasMediumITC',
   },
 });

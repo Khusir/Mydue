@@ -7,6 +7,7 @@ import 'react-native-gesture-handler';
 import SignupNum from './src/MobileScreen/index';
 import OtpScreen from './src/OtpScreen/index';
 import NameScreen from './src/NameScreen/index';
+import MainScreen from './src/MainScreen/index';
 
 const Stack = createNativeStackNavigator();
 const Routes = () => {
@@ -33,6 +34,7 @@ const Routes = () => {
           component={NameScreen}
           options={{headerShown: false}}
         />
+        <Stack.Screen name="Main" component={MainScreen} />
       </Stack.Navigator>
     </NavigationContainer>
   );

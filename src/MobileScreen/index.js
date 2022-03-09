@@ -46,7 +46,13 @@ const SignupNum = () => {
           top: Dimensions.get('screen').height / 1.75,
           left: Dimensions.get('screen').width / 20,
         }}>
-        <Text style={{color: 'black', fontSize: 18, fontWeight: '600'}}>
+        <Text
+          style={{
+            color: 'black',
+            fontSize: 18,
+            fontWeight: '600',
+            fontFamily: 'ErasMediumITC',
+          }}>
           Enter your mobile number
         </Text>
       </View>
@@ -69,7 +75,11 @@ const SignupNum = () => {
         }}>
         <View style={{position: 'absolute'}}>
           <DropDownPicker
-            labelStyle={{color: 'black', fontSize: 15}}
+            labelStyle={{
+              color: 'black',
+              fontSize: 15,
+              fontFamily: 'ErasMediumITC',
+            }}
             items={[
               {
                 label: '+91',
@@ -108,7 +118,8 @@ const SignupNum = () => {
             alignSelf: 'center',
             color: 'black',
             fontSize: 18,
-            fontStyle: 'italic',
+            //fontStyle: 'italic',
+            fontFamily: 'ErasMediumITC',
           }}
         />
 
@@ -148,6 +159,7 @@ const SignupNum = () => {
             fontSize: 12,
             textAlign: 'center',
             fontWeight: '300',
+            fontFamily: 'ErasMediumITC',
           }}>
           By Creating on account you agree to our Terms of Service and Privacy
           Policy
