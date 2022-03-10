@@ -14,6 +14,7 @@ const Routes = () => {
   return (
     <NavigationContainer>
       <Stack.Navigator>
+        <Stack.Screen name="Main" component={MainScreen} />
         <Stack.Screen
           name="Splash"
           component={SplashScreen}
@@ -34,7 +35,6 @@ const Routes = () => {
           component={NameScreen}
           options={{headerShown: false}}
         />
-        <Stack.Screen name="Main" component={MainScreen} />
       </Stack.Navigator>
     </NavigationContainer>
   );
