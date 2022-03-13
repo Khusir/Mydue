@@ -19,9 +19,9 @@ import Contacts from 'react-native-contacts';
 import Permission from '../../components/Permission';
 import {useNavigation} from '@react-navigation/native';
 
-const CustomerScreen = () => {
+const CustomerScreen = ({navigation}) => {
   const [visible, setVisible] = useState(false);
-  const navigation = useNavigation();
+  //const navigation = useNavigation();
 
   useEffect(() => {
     LogBox.ignoreLogs(['EventEmitter.removeListener']);
@@ -79,6 +79,7 @@ const CustomerScreen = () => {
                 shadowOffset: 1,
                 zIndex: 100,
                 left: 10,
+                position: 'absolute',
               }}>
               <TouchableOpacity activeOpacity={0.8}>
                 <Icon
@@ -104,6 +105,12 @@ const CustomerScreen = () => {
           }}>
           <ListItem.Content>
             <View
+              onTouchEnd={() =>
+                navigation.navigate('Chat', {
+                  name: item.name,
+                  number: item.number,
+                })
+              }
               style={{
                 flex: 1,
                 flexDirection: 'row',
@@ -124,6 +131,7 @@ const CustomerScreen = () => {
                   }}
                 />
               </View>
+
               <View>
                 <ListItem.Title
                   style={{left: 10, top: 5, fontFamily: 'ErasMediumITC'}}>
@@ -193,8 +201,7 @@ const CustomerScreen = () => {
           //   Linking.openURL('content://com.android.contacts/contacts')
           // }
           //onPress={onPermission}
-          activeOpacity={0.9}
-          onPress={() => setVisible(true)}
+          onPress={onTigger}
           icon={
             <Icon
               name="account-plus"

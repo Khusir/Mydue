@@ -6,6 +6,7 @@ export const DATA = [
     status: 'Due',
     description: '1000 Credit INR added on 01-03-2022',
     color: 'blue',
+    number: 9000500000,
   },
   {
     id: 2,
@@ -14,6 +15,7 @@ export const DATA = [
     status: 'Due',
     description: '1000 Credit INR added on 12-03-2022',
     color: 'red',
+    number: 9020500001,
   },
   {
     id: 3,
@@ -22,6 +24,7 @@ export const DATA = [
     status: 'Due',
     description: '1000 Credit INR added on 15-03-2022',
     color: 'pink',
+    number: 9040500002,
   },
   {
     id: 4,
@@ -30,6 +33,7 @@ export const DATA = [
     status: 'Due',
     description: '1000 Credit INR added on 09-03-2022',
     color: 'black',
+    number: 9300500020,
   },
   {
     id: 5,
@@ -38,6 +42,7 @@ export const DATA = [
     status: 'Due',
     description: '1000 Credit INR added on 11-03-2022',
     color: 'purple',
+    number: 9040500050,
   },
   {
     id: 6,
@@ -46,6 +51,7 @@ export const DATA = [
     status: 'Due',
     description: '1000 Credit INR added on 11-03-2022',
     color: 'red',
+    number: 9030500060,
   },
   {
     id: 7,
@@ -54,6 +60,7 @@ export const DATA = [
     status: 'Due',
     description: '1000 Credit INR added on 11-03-2022',
     color: 'green',
+    number: 9080504000,
   },
   {
     id: 8,
@@ -62,6 +69,7 @@ export const DATA = [
     status: 'Due',
     description: '1000 Credit INR added on 11-03-2022',
     color: 'orange',
+    number: 9900503030,
   },
   {
     id: 9,
@@ -70,6 +78,7 @@ export const DATA = [
     status: 'Due',
     description: '1000 Credit INR added on 11-03-2022',
     color: 'violet',
+    number: 9200500400,
   },
   {
     id: 10,
@@ -78,6 +87,7 @@ export const DATA = [
     status: 'Due',
     description: '1000 Credit INR added on 11-03-2022',
     color: 'blue',
+    number: 9040500400,
   },
   {
     id: 11,
@@ -86,6 +96,7 @@ export const DATA = [
     status: 'Due',
     description: '1000 Credit INR added on 11-03-2022',
     color: 'yellow',
+    number: 9900500630,
   },
   {
     id: 12,
@@ -94,6 +105,7 @@ export const DATA = [
     status: 'Due',
     description: '1000 Credit INR added on 11-03-2022',
     color: 'red',
+    number: 9030508060,
   },
   {
     id: 13,
@@ -102,6 +114,7 @@ export const DATA = [
     status: 'Due',
     description: '1000 Credit INR added on 11-03-2022',
     color: 'green',
+    number: 9030504500,
   },
   {
     id: 14,
@@ -110,6 +123,7 @@ export const DATA = [
     status: 'Due',
     description: '1000 Credit INR added on 11-03-2022',
     color: 'black',
+    number: 9030500890,
   },
   {
     id: 15,
@@ -118,6 +132,7 @@ export const DATA = [
     status: 'Due',
     description: '1000 Credit INR added on 11-03-2022',
     color: 'blue',
+    number: 9100550800,
   },
   {
     id: 16,
@@ -126,5 +141,6 @@ export const DATA = [
     status: 'Due',
     description: '1000 Credit INR added on 11-03-2022',
     color: 'purple',
+    number: 9900504060,
   },
 ];

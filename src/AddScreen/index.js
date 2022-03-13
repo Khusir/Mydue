@@ -32,12 +32,12 @@ const AddScreen = () => {
             borderRadius: 20,
             marginHorizontal: 10,
           }}>
-          <TouchableOpacity>
+          <TouchableOpacity onPress={() => navigation.navigate('Main')}>
             <Icon1
               name="arrow-back-outline"
               size={25}
               color={'white'}
-              style={{justifyContent: 'center', alignSelf: 'center', top: 5}}
+              style={{justifyContent: 'center', alignSelf: 'center', top: 4.5}}
             />
           </TouchableOpacity>
         </View>

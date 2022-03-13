@@ -12,7 +12,7 @@ import {ListItem, Avatar, Button} from 'react-native-elements';
 import {DATA} from '../../mockData';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 
-const SupplierScreen = () => {
+const SupplierScreen = ({navigation}) => {
   const renderList = ({item}) => (
     <View style={{flex: 1, justifyContent: 'center'}}>
       <ListItem bottomDivider>

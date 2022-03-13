@@ -1,4 +1,11 @@
-import {StyleSheet, Text, View, Dimensions, Image} from 'react-native';
+import {
+  StyleSheet,
+  Text,
+  View,
+  Dimensions,
+  Image,
+  TouchableOpacity,
+} from 'react-native';
 import React from 'react';
 import {NavigationContainer} from '@react-navigation/native';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
@@ -12,9 +19,12 @@ import CustomerScreen from './src/CustScreen/index';
 import SupplierScreen from './src/SplScreen/index';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import AddScreen from './src/AddScreen/index';
+import ProfileScreen from './src/ProfileScreen/index';
+import ChatScreen from './src/ChatScreen/index';
 
 const Stack = createNativeStackNavigator();
 const Tabs = createMaterialTopTabNavigator();
+
 const Routes = () => {
   function Home() {
     return (
@@ -46,7 +56,40 @@ const Routes = () => {
   }
   return (
     <NavigationContainer>
-      <Stack.Navigator>
+      <Stack.Navigator initialRouteName="Splash">
+        <Stack.Screen
+          name="Main"
+          component={Home}
+          options={({navigation, route}) => ({
+            title: 'Mydue',
+            headerTitleAlign: 'left',
+            headerStyle: {
+              backgroundColor: '#FFC300',
+              fontFamily: 'ErasMediumITC',
+            },
+            headerTitleStyle: {
+              fontFamily: 'ErasMediumITC',
+            },
+            headerLeft: () => (
+              <View>
+                <Image
+                  source={require('./src/Splash/assests/logo2.png')}
+                  style={{resizeMode: 'contain', height: 40, width: 50}}
+                />
+              </View>
+            ),
+
+            headerRight: () => (
+              <View>
+                <TouchableOpacity
+                  onPress={() => navigation.navigate('Profile')}>
+                  <Icon name="more-vert" color={'black'} size={25} />
+                </TouchableOpacity>
+              </View>
+            ),
+          })}
+        />
+
         <Stack.Screen
           name="Splash"
           component={SplashScreen}
@@ -68,35 +111,10 @@ const Routes = () => {
           component={NameScreen}
           options={{headerShown: false}}
         />
-        <Stack.Screen
-          name="Main"
-          component={Home}
-          options={{
-            title: 'Mydue',
-            headerTitleAlign: 'left',
-            headerStyle: {
-              backgroundColor: '#FFC300',
-              fontFamily: 'ErasMediumITC',
-            },
-            headerTitleStyle: {
-              fontFamily: 'ErasMediumITC',
-            },
-            headerLeft: () => (
-              <View>
-                <Image
-                  source={require('./src/Splash/assests/logo2.png')}
-                  style={{resizeMode: 'contain', height: 40, width: 50}}
-                />
-              </View>
-            ),
-            headerRight: () => (
-              <View>
-                <Icon name="more-vert" color={'black'} size={25} />
-              </View>
-            ),
-          }}
-        />
+
         <Stack.Screen name="Add" component={AddScreen} />
+        <Stack.Screen name="Profile" component={ProfileScreen} />
+        <Stack.Screen name="Chat" component={ChatScreen} />
       </Stack.Navigator>
     </NavigationContainer>
   );
