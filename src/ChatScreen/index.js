@@ -888,6 +888,12 @@ const ChatScreen = ({route, navigation}) => {
       </View>
       <View>
         <Button
+          onPress={() =>
+            navigation.navigate('Send', {
+              Cname: route.params.name,
+              Cnumber: route.params.number,
+            })
+          }
           title="Received"
           titleStyle={{
             fontSize: 18,
