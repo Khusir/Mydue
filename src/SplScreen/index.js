@@ -6,13 +6,53 @@ import {
   Dimensions,
   TouchableOpacity,
 } from 'react-native';
-import React from 'react';
+import React, {useState} from 'react';
 //import {Button, List} from 'react-native-paper';
 import {ListItem, Avatar, Button} from 'react-native-elements';
 import {DATA} from '../../mockData';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
+import Permission from '../../components/Permission';
 
 const SupplierScreen = ({navigation}) => {
+  const [visible, setVisible] = useState(false);
+
+  const onTigger = () => {
+    setVisible(!visible);
+  };
+
+  const onNavigate = () => {
+    navigation.navigate('Add');
+  };
+  const onPermission = () => {
+    if (Platform.OS === 'android') {
+      PermissionsAndroid.request(PermissionsAndroid.PERMISSIONS.READ_CONTACTS, {
+        title: 'Contacts',
+        message: 'This app would like to view your contacts.',
+      }).then(() => {
+        loadContacts();
+      });
+    } else {
+      loadContacts();
+    }
+  };
+
+  const loadContacts = () => {
+    Contacts.getAll()
+      .then(contacts => {
+        contacts.sort(
+          (a, b) => a.givenName.toLowerCase() > b.givenName.toLowerCase(),
+        );
+        console.log(contacts);
+      })
+      .catch(e => {
+        alert('Permission to access contact was denied');
+      });
+  };
+
+  // const openContact = () => {
+  //   Contacts.
+  // };
+
   const renderList = ({item}) => (
     <View style={{flex: 1, justifyContent: 'center'}}>
       <ListItem bottomDivider>
@@ -51,7 +91,13 @@ const SupplierScreen = ({navigation}) => {
             alignItems: 'center',
             width: Dimensions.get('screen').width,
           }}>
-          <ListItem.Content>
+          <ListItem.Content
+            onTouchEnd={() =>
+              navigation.navigate('ChatS', {
+                name: item.name,
+                number: item.number,
+              })
+            }>
             <View
               style={{
                 flex: 1,
@@ -137,15 +183,8 @@ const SupplierScreen = ({navigation}) => {
           bottom: 0,
           position: 'absolute',
         }}>
-        {/* <Button
-          icon="account-plus"
-          mode="contained"
-          color="#FFC300"
-          labelStyle={{fontFamily: 'ErasMediumITC', top: 10}}
-          style={{height: 50, width: '100%', alignItems: 'center'}}>
-          Add Contact
-        </Button> */}
         <Button
+          onPress={onTigger}
           icon={
             <Icon
               name="account-plus"
@@ -172,6 +211,12 @@ const SupplierScreen = ({navigation}) => {
           }}
         />
       </View>
+      <Permission
+        visible={visible}
+        visibleBackdrop={onTigger}
+        visibleSwipe={onTigger}
+        onClick={onNavigate}
+      />
     </>
   );
 };

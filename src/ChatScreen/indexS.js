@@ -14,7 +14,7 @@ import {Button} from 'react-native-elements';
 import Buttons from '../../components/Buttons';
 import History from '../../components/History';
 
-const ChatScreen = ({route, navigation}) => {
+const ChatScreenS = ({route, navigation}) => {
   useLayoutEffect(() => {
     navigation.setOptions({
       title: `${route.params.name}`,
@@ -83,6 +83,10 @@ const ChatScreen = ({route, navigation}) => {
           justifyContent: 'center',
           elevation: 20,
           borderRadius: 5,
+          //shadowColor: 'black',
+          //shadowOpacity: 1,
+          //shadowOffset: 20,
+          //shadowRadius: 100,
         }}>
         <View
           style={{
@@ -129,9 +133,9 @@ const ChatScreen = ({route, navigation}) => {
         viewText1={styles.viewText1}
       />
       <Buttons
-        title={'Received'}
+        title={'Payment'}
         buttonStyle={styles.buttonStyle}
-        iconName="arrow-down-outline"
+        iconName="arrow-up-outline"
         onclick={() =>
           navigation.navigate('Send', {
             Cname: route.params.name,
@@ -143,13 +147,13 @@ const ChatScreen = ({route, navigation}) => {
   );
 };
 
-export default ChatScreen;
+export default ChatScreenS;
 
 const styles = StyleSheet.create({
   buttonStyle: {
     height: 50,
     width: Dimensions.get('screen').width,
-    backgroundColor: '#00C897',
+    backgroundColor: 'red',
   },
   viewStyle: {
     flex: 1,

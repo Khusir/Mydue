@@ -13,16 +13,20 @@ const Permission = ({visible, visibleBackdrop, visibleSwipe, onClick}) => {
         onSwipeDown={visibleSwipe}
         //wrapperStyles={{backgroundColor: 'transparent'}}
         style={{
-          backgroundColor: '#FFC300',
+          //backgroundColor: '#FFC300',
           elevation: 30,
-          borderRadius: 35,
+          //borderRadius: 35,
+          backgroundColor: 'transparent',
         }}>
         <List
           style={{
             backgroundColor: 'white',
-            borderRadius: 30,
+            //borderRadius: 0,
+            borderTopEndRadius: 30,
+            borderTopStartRadius: 30,
             elevation: 50,
             //height: 20,
+            //bottom: 50,
           }}>
           <ListItem
             textStyle={{fontFamily: 'ErasMediumITC'}}

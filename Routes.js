@@ -22,6 +22,7 @@ import AddScreen from './src/AddScreen/index';
 import ProfileScreen from './src/ProfileScreen/index';
 import ChatScreen from './src/ChatScreen/index';
 import SendScreen from './src/SendScreen/index';
+import ChatScreenS from './src/ChatScreen/indexS';
 
 const Stack = createNativeStackNavigator();
 const Tabs = createMaterialTopTabNavigator();
@@ -57,7 +58,7 @@ const Routes = () => {
   }
   return (
     <NavigationContainer>
-      <Stack.Navigator initialRouteName="Main">
+      <Stack.Navigator initialRouteName="Splash">
         <Stack.Screen
           name="Main"
           component={Home}
@@ -117,6 +118,7 @@ const Routes = () => {
         <Stack.Screen name="Profile" component={ProfileScreen} />
         <Stack.Screen name="Chat" component={ChatScreen} />
         <Stack.Screen name="Send" component={SendScreen} />
+        <Stack.Screen name="ChatS" component={ChatScreenS} />
       </Stack.Navigator>
     </NavigationContainer>
   );
