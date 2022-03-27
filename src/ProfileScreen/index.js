@@ -16,7 +16,7 @@ const ProfileScreen = ({navigation}) => {
 
   useLayoutEffect(() => {
     navigation.setOptions({
-      title: 'Satyajeet Kayal',
+      title: 'Username',
       headerStyle: {
         backgroundColor: '#FFC300',
         fontFamily: 'ErasMediumITC',
@@ -178,7 +178,7 @@ const ProfileScreen = ({navigation}) => {
             top: 77,
           }}></View>
 
-        <View style={{flexDirection: 'row', top: 88}}>
+        <View style={{flexDirection: 'row', top: 90}}>
           <View>
             <Icon2
               name="privacy-tip"
@@ -196,6 +196,37 @@ const ProfileScreen = ({navigation}) => {
                   fontFamily: 'ErasMediumITC',
                 }}>
                 Terms & Services
+              </Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+        <View
+          style={{
+            borderWidth: 0.19,
+            borderColor: 'grey',
+            width: Dimensions.get('screen').width / 1.5,
+            left: 65,
+            alignSelf: 'flex-start',
+            top: 99,
+          }}></View>
+        <View style={{flexDirection: 'row', top: 110}}>
+          <View>
+            <Icon2
+              name="logout"
+              size={25}
+              color="#FFC300"
+              style={{marginHorizontal: 20, left: 3}}
+            />
+          </View>
+          <View>
+            <TouchableOpacity>
+              <Text
+                style={{
+                  color: 'black',
+                  fontSize: 18,
+                  fontFamily: 'ErasMediumITC',
+                }}>
+                Logout
               </Text>
             </TouchableOpacity>
           </View>

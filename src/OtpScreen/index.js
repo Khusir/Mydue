@@ -7,40 +7,37 @@ import {
   TouchableOpacity,
   TextInput,
 } from 'react-native';
-import React, {useRef} from 'react';
+import React from 'react';
 import Icon from 'react-native-vector-icons/Ionicons';
-import DropDownPicker from 'react-native-custom-dropdown';
 import {useNavigation} from '@react-navigation/native';
+import OTPTextView from 'react-native-otp-textinput';
 
 const OtpScreen = () => {
   const navigation = useNavigation();
-  const input_ref1 = useRef();
-  const input_ref2 = useRef();
-  const input_ref3 = useRef();
-  const input_ref4 = useRef();
-  const input_ref5 = useRef();
-  const input_ref6 = useRef();
   return (
-    <View style={{flex: 1, backgroundColor: 'white'}}>
+    <>
       <View
         style={{
-          flex: 1,
           backgroundColor: '#FFC300',
           borderBottomEndRadius: 300,
           borderBottomStartRadius: 300,
           transform: [{scaleX: 1.7}],
-          top: -20,
+          height: Dimensions.get('screen').height / 2.1,
         }}></View>
-      <View style={{flex: 1, top: Dimensions.get('screen').height / -3}}>
+      <View
+        style={{
+          top: Dimensions.get('screen').height / -5,
+          justifyContent: 'center',
+        }}>
         <Image
           source={require('../Splash/assests/logo3.png')}
           style={{
-            width: '100%',
-            height: '40%',
-            justifyContent: 'center',
-            resizeMode: 'center',
+            width: Dimensions.get('screen').width,
+            height: Dimensions.get('screen').height / 5,
             alignSelf: 'center',
+            position: 'absolute',
           }}
+          resizeMode="center"
         />
       </View>
       <View
@@ -48,7 +45,7 @@ const OtpScreen = () => {
           position: 'absolute',
           justifyContent: 'center',
           alignSelf: 'flex-start',
-          top: Dimensions.get('screen').height / 1.8,
+          top: Dimensions.get('screen').height / 1.85,
           left: Dimensions.get('screen').width / 19,
         }}>
         <Text
@@ -66,7 +63,7 @@ const OtpScreen = () => {
           position: 'absolute',
           justifyContent: 'center',
           alignSelf: 'flex-start',
-          top: Dimensions.get('screen').height / 1.75,
+          top: Dimensions.get('screen').height / 1.8,
           left: Dimensions.get('screen').width / 20,
         }}>
         <Text
@@ -86,119 +83,40 @@ const OtpScreen = () => {
           backgroundColor: 'white',
           height: Dimensions.get('screen').height / 12,
           width: Dimensions.get('screen').width / 1.1,
-          top: Dimensions.get('screen').height / 1.6,
+          top: Dimensions.get('screen').height / 1.68,
           alignSelf: 'center',
           justifyContent: 'center',
           elevation: 20,
           borderRadius: 5,
-          shadowColor: 'black',
-          shadowOpacity: 1,
-          shadowOffset: 20,
-          shadowRadius: 100,
+          //shadowColor: 'black',
+          //shadowOpacity: 1,
+          //shadowOffset: 20,
+          //shadowRadius: 100,
         }}>
         <View
           style={{
             justifyContent: 'center',
-            flexDirection: 'row',
             alignSelf: 'flex-start',
-            left: Dimensions.get('screen').width / 9,
+            left: 10,
           }}>
-          <View>
-            <TextInput
-              ref={input_ref1}
-              placeholderTextColor={'black'}
-              placeholder="0"
-              style={styles.txInputStyle}
-              maxLength={1}
-              textAlign="center"
-              onChangeText={() => input_ref2.current.focus()}
-              keyboardType="number-pad"
-            />
-          </View>
-          <View>
-            <TextInput
-              placeholderTextColor={'black'}
-              placeholder="0"
-              style={styles.txInputStyle}
-              maxLength={1}
-              textAlign="center"
-              ref={input_ref2}
-              onChangeText={() => input_ref3.current.focus()}
-              keyboardType="number-pad"
-              onKeyPress={({nativeEvent}) =>
-                nativeEvent.key === 'Backspace'
-                  ? input_ref1.current.focus()
-                  : null
-              }
-            />
-          </View>
-          <View>
-            <TextInput
-              placeholderTextColor={'black'}
-              placeholder="0"
-              style={styles.txInputStyle}
-              maxLength={1}
-              textAlign="center"
-              ref={input_ref3}
-              onChangeText={() => input_ref4.current.focus()}
-              keyboardType="number-pad"
-              onKeyPress={({nativeEvent}) =>
-                nativeEvent.key === 'Backspace'
-                  ? input_ref2.current.focus()
-                  : null
-              }
-            />
-          </View>
-          <View>
-            <TextInput
-              placeholderTextColor={'black'}
-              placeholder="0"
-              style={styles.txInputStyle}
-              maxLength={1}
-              textAlign="center"
-              ref={input_ref4}
-              onChangeText={() => input_ref5.current.focus()}
-              keyboardType="number-pad"
-              onKeyPress={({nativeEvent}) =>
-                nativeEvent.key === 'Backspace'
-                  ? input_ref3.current.focus()
-                  : null
-              }
-            />
-          </View>
-          <View>
-            <TextInput
-              placeholderTextColor={'black'}
-              placeholder="0"
-              style={styles.txInputStyle}
-              maxLength={1}
-              textAlign="center"
-              ref={input_ref5}
-              onChangeText={() => input_ref6.current.focus()}
-              keyboardType="number-pad"
-              onKeyPress={({nativeEvent}) =>
-                nativeEvent.key === 'Backspace'
-                  ? input_ref4.current.focus()
-                  : null
-              }
-            />
-          </View>
-          <View>
-            <TextInput
-              placeholderTextColor={'black'}
-              placeholder="0"
-              style={styles.txInputStyle}
-              maxLength={1}
-              textAlign="center"
-              ref={input_ref6}
-              keyboardType="number-pad"
-              onKeyPress={({nativeEvent}) =>
-                nativeEvent.key === 'Backspace'
-                  ? input_ref5.current.focus()
-                  : null
-              }
-            />
-          </View>
+          <OTPTextView
+            placeholder="0"
+            placeholderTextColor="black"
+            inputCount={6}
+            tintColor={'transparent'}
+            offTintColor={'transparent'}
+            inputCellLength={1}
+            containerStyle={{
+              alignSelf: 'center',
+              //flex: 1,
+            }}
+            textInputStyle={{
+              width: 32,
+              textAlign: 'center',
+              marginHorizontal: 5,
+              fontFamily: 'ErasMediumITC',
+            }}
+          />
         </View>
 
         <View
@@ -213,7 +131,7 @@ const OtpScreen = () => {
           }}>
           <TouchableOpacity
             activeOpacity={0.5}
-            onPress={() => navigation.navigate('Name')}>
+            onPress={() => navigation.replace('Name')}>
             <Icon
               name="arrow-forward-outline"
               color="black"
@@ -229,7 +147,6 @@ const OtpScreen = () => {
           alignSelf: 'center',
           top: Dimensions.get('screen').height / 1.1,
           width: Dimensions.get('screen').width / 1.5,
-          //marginHorizontal: 10,
         }}>
         <Text
           style={{
@@ -243,7 +160,7 @@ const OtpScreen = () => {
           Policy.
         </Text>
       </View>
-    </View>
+    </>
   );
 };
 

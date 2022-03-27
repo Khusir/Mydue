@@ -6,14 +6,18 @@ import {
   View,
   TextInput,
 } from 'react-native';
-import React, {useLayoutEffect} from 'react';
+import React, {useLayoutEffect, useEffect, useState} from 'react';
 import {useNavigation} from '@react-navigation/native';
 import Icon1 from 'react-native-vector-icons/Ionicons';
 import Icon2 from 'react-native-vector-icons/MaterialIcons';
 import {Button} from 'react-native-elements';
+import DropDownPicker from 'react-native-custom-dropdown';
 
 const AddScreen = () => {
   const navigation = useNavigation();
+
+  //const [label, setLabel] = useState(['Choose Category']);
+  const label = ['Choose Category'];
 
   useLayoutEffect(() => {
     navigation.setOptions({
@@ -145,6 +149,40 @@ const AddScreen = () => {
           }}
           maxLength={10}
           keyboardType="number-pad"
+        />
+      </View>
+      <View style={{alignSelf: 'center', top: 190}}>
+        <DropDownPicker
+          items={[
+            {label: 'Customer', value: 'customer'},
+            {label: 'Supplier', value: 'supplier'},
+          ]}
+          placeholder="Choose Category"
+          containerStyle={{
+            height: 50,
+            width: Dimensions.get('screen').width / 1.1,
+            elevation: 20,
+            backgroundColor: 'white',
+            borderRadius: 10,
+          }}
+          style={{
+            backgroundColor: 'white',
+            borderColor: 'white',
+            borderRadius: 10,
+          }}
+          itemStyle={{
+            justifyContent: 'flex-start',
+          }}
+          dropDownStyle={{
+            backgroundColor: '#D1D1D1',
+            borderColor: '#D1D1D1',
+          }}
+          placeholderStyle={{color: 'black', fontFamily: 'ErasMediumITC'}}
+          labelStyle={{
+            fontFamily: 'ErasMediumITC',
+            color: 'black',
+            fontSize: 15,
+          }}
         />
       </View>
       <View

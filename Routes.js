@@ -5,8 +5,9 @@ import {
   Dimensions,
   Image,
   TouchableOpacity,
+  LogBox,
 } from 'react-native';
-import React from 'react';
+import React, {useEffect, useState} from 'react';
 import {NavigationContainer} from '@react-navigation/native';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import SplashScreen from './src/Splash/index';
@@ -23,37 +24,87 @@ import ProfileScreen from './src/ProfileScreen/index';
 import ChatScreen from './src/ChatScreen/index';
 import SendScreen from './src/SendScreen/index';
 import ChatScreenS from './src/ChatScreen/indexS';
+import Carousel from 'react-native-banner-carousel-updated';
 
 const Stack = createNativeStackNavigator();
 const Tabs = createMaterialTopTabNavigator();
 
 const Routes = () => {
+  const [visible, setVisible] = useState(false);
+
+  const images = [
+    'https://www.wordstream.com/wp-content/uploads/2021/07/banner-ads-examples-intro-liberty-university.jpg',
+    'https://www.wordstream.com/wp-content/uploads/2021/07/banner-ads-examples-microsoft.jpg',
+    'https://www.wordstream.com/wp-content/uploads/2021/07/banner-ads-examples-amazon.jpg',
+    'https://www.wordstream.com/wp-content/uploads/2021/07/banner-ads-examples-apple.jpg',
+  ];
+
+  useEffect(() => {
+    setTimeout(() => {
+      setVisible(true);
+    }, 7000);
+    LogBox.ignoreLogs(['Animated: `useNativeDriver`']);
+  }, []);
+
+  useEffect(() => {}, []);
+
+  const renderPage = (image, index) => {
+    return (
+      <View key={index}>
+        <Image
+          style={{width: Dimensions.get('screen').width, height: 45}}
+          source={{uri: image}}
+          resizeMode="stretch"
+        />
+      </View>
+    );
+  };
+
   function Home() {
     return (
-      <Tabs.Navigator
-        screenOptions={{
-          tabBarLabelStyle: {fontFamily: 'ErasMediumITC', fontSize: 13},
-          swipeEnabled: false,
-          tabBarItemStyle: {
-            backgroundColor: '#FFC300',
-            elevation: 0,
-            shadowOffset: 0,
-          },
-          tabBarIndicatorStyle: {
-            backgroundColor: 'black',
-            width: Dimensions.get('screen').width / 5,
-            justifyContent: 'center',
-            left: 55,
-            flex: 1,
-          },
+      <>
+        <View>
+          {visible ? (
+            <View>
+              <Carousel
+                slipFactor={0.5}
+                autoplay
+                autoplayTimeout={5000}
+                loop
+                index={0}
+                showsPageIndicator={false}
+                pageSize={Dimensions.get('screen').width}>
+                {images.map((image, index) => renderPage(image, index))}
+              </Carousel>
+            </View>
+          ) : null}
+        </View>
 
-          tabBarIndicatorContainerStyle: {
-            zIndex: 100,
-          },
-        }}>
-        <Tabs.Screen name="Customer" component={CustomerScreen} />
-        <Tabs.Screen name="Supplier" component={SupplierScreen} />
-      </Tabs.Navigator>
+        <Tabs.Navigator
+          screenOptions={{
+            lazy: true,
+            tabBarLabelStyle: {fontFamily: 'ErasMediumITC', fontSize: 13},
+            swipeEnabled: false,
+            tabBarItemStyle: {
+              backgroundColor: '#FFC300',
+              elevation: 0,
+              shadowOffset: 0,
+            },
+            tabBarIndicatorStyle: {
+              backgroundColor: 'black',
+              width: Dimensions.get('screen').width / 5,
+              justifyContent: 'center',
+              left: 55,
+              flex: 1,
+            },
+            tabBarIndicatorContainerStyle: {
+              zIndex: 100,
+            },
+          }}>
+          <Tabs.Screen name="Customer" component={CustomerScreen} />
+          <Tabs.Screen name="Supplier" component={SupplierScreen} />
+        </Tabs.Navigator>
+      </>
     );
   }
   return (
@@ -72,6 +123,7 @@ const Routes = () => {
             headerTitleStyle: {
               fontFamily: 'ErasMediumITC',
             },
+
             headerLeft: () => (
               <View>
                 <Image
@@ -89,6 +141,7 @@ const Routes = () => {
                 </TouchableOpacity>
               </View>
             ),
+            //gestureEnabled: false,
           })}
         />
 

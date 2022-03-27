@@ -33,16 +33,27 @@ const History = ({
               <View>
                 <Text style={viewText1}>₹ 1000</Text>
               </View>
-              <View style={styles.stampView}>
+              <View style={{position: 'absolute', right: 0}}>
+                <Icon name="document-text-outline" size={20} color="black" />
+              </View>
+              {/* <View style={styles.stampView}>
                 <Text style={styles.sendTimeStamp}>
                   {moment().format('hh:mm A')}
                 </Text>
-              </View>
+              </View> */}
             </View>
           </View>
-          <View style={styles.amountView}>
-            <Text style={styles.amountText2}>₹ 1,000 Advance</Text>
+          <View style={{flexDirection: 'row', justifyContent: 'flex-start'}}>
+            <View style={styles.amountView}>
+              <Text style={styles.amountText2}>
+                {moment().format('hh:mm A')}
+              </Text>
+            </View>
+            <View style={styles.amountView}>
+              <Text style={styles.amountText2}>Bill</Text>
+            </View>
           </View>
+
           <View style={styles.viewStyle2}>
             <View style={{flexDirection: 'row'}}>
               <View>
@@ -51,15 +62,26 @@ const History = ({
               <View>
                 <Text style={styles.amountText}>₹ 1000</Text>
               </View>
-              <View style={styles.stampView}>
+              {/* <View style={styles.stampView}>
                 <Text style={styles.sendTimeStamp}>
                   {moment().format('hh:mm A')}
                 </Text>
-              </View>
+              </View> */}
             </View>
           </View>
-          <View style={styles.amountText1}>
-            <Text style={styles.amountText2}>₹ 1,000 Received</Text>
+          <View
+            style={{
+              flexDirection: 'row',
+              justifyContent: 'flex-end',
+            }}>
+            <View style={styles.amountText1}>
+              <Text style={styles.amountText2}>
+                {moment().format('hh:mm A')}
+              </Text>
+            </View>
+            <View style={styles.amountText1}>
+              <Text style={styles.amountText2}>Received</Text>
+            </View>
           </View>
         </ScrollView>
       </View>
@@ -97,19 +119,23 @@ const styles = StyleSheet.create({
     position: 'relative',
     top: -15,
     right: 15,
+    marginLeft: 90,
   },
   amountView: {
     alignSelf: 'flex-start',
     position: 'relative',
     left: 10,
     top: -15,
+    marginRight: 110,
   },
   stampView: {
     marginHorizontal: 40,
     justifyContent: 'flex-end',
+    top: 10,
   },
   amountText2: {
     fontSize: 10,
     color: 'grey',
+    fontFamily: 'ErasMediumITC',
   },
 });

@@ -10,32 +10,35 @@ import {
 } from 'react-native';
 import React from 'react';
 import Icon from 'react-native-vector-icons/Ionicons';
-import DropDownPicker from 'react-native-custom-dropdown';
-import Icon2 from 'react-native-vector-icons/Feather';
 import {useNavigation} from '@react-navigation/native';
 
 const SignupNum = () => {
   const navigation = useNavigation();
+
   return (
-    <View style={{flex: 1, backgroundColor: 'white'}}>
+    <>
       <View
         style={{
-          flex: 1,
+          height: Dimensions.get('screen').height / 2.1,
           backgroundColor: '#FFC300',
           borderBottomEndRadius: 300,
           borderBottomStartRadius: 300,
-          transform: [{scaleX: 1.6}],
+          transform: [{scaleX: 1.7}],
         }}></View>
-      <View style={{flex: 1, top: Dimensions.get('screen').height / -3}}>
+      <View
+        style={{
+          top: Dimensions.get('screen').height / -5,
+          justifyContent: 'center',
+        }}>
         <Image
           source={require('../Splash/assests/logo3.png')}
           style={{
-            width: '100%',
-            height: '40%',
-            justifyContent: 'center',
-            resizeMode: 'center',
+            width: 350,
+            height: 150,
+            position: 'absolute',
             alignSelf: 'center',
           }}
+          resizeMode="center"
         />
       </View>
       <View
@@ -43,7 +46,7 @@ const SignupNum = () => {
           position: 'absolute',
           justifyContent: 'center',
           alignSelf: 'flex-start',
-          top: Dimensions.get('screen').height / 1.75,
+          top: Dimensions.get('screen').height / 1.8,
           left: Dimensions.get('screen').width / 20,
         }}>
         <Text
@@ -63,56 +66,36 @@ const SignupNum = () => {
           backgroundColor: 'white',
           height: Dimensions.get('screen').height / 12,
           width: Dimensions.get('screen').width / 1.1,
-          top: Dimensions.get('screen').height / 1.6,
+          top: Dimensions.get('screen').height / 1.68,
           alignSelf: 'center',
           justifyContent: 'center',
           elevation: 20,
           borderRadius: 5,
-          shadowColor: 'black',
-          shadowOpacity: 1,
-          shadowOffset: 20,
-          shadowRadius: 100,
+          //shadowColor: 'black',
+          //shadowOpacity: 1,
+          //shadowOffset: 20,
+          //shadowRadius: 100,
         }}>
-        <View style={{position: 'absolute'}}>
-          <DropDownPicker
-            labelStyle={{
-              color: 'black',
-              fontSize: 15,
-              fontFamily: 'ErasMediumITC',
-            }}
-            items={[
-              {
-                label: '+91',
-                value: '+91',
-              },
-              {
-                label: '+1',
-                value: '+1',
-              },
-            ]}
-            // /defaultValue={'+91'}
-            containerStyle={{height: 50, width: 70}}
-            style={{backgroundColor: 'white', borderColor: 'white'}}
-            itemStyle={{
-              justifyContent: 'flex-start',
-              left: 5,
-            }}
-            dropDownStyle={{
-              backgroundColor: 'white',
-              borderColor: 'white',
-              elevation: 25,
-              shadowColor: 'black',
-              shadowOpacity: 1,
-              shadowRadius: 100,
-            }}
-            placeholder="+91"
-          />
+        <View
+          style={{
+            position: 'absolute',
+            flexDirection: 'row',
+            //alignSelf: 'flex-start',
+            left: 15,
+          }}>
+          <Text
+            style={{color: 'black', fontFamily: 'ErasMediumITC', fontSize: 17}}>
+            +91
+          </Text>
+          <Icon name="chevron-down-outline" color="black" size={18} />
         </View>
         <TextInput
+          //value={mob}
           placeholder="Mobile Number"
           placeholderTextColor={'grey'}
           keyboardType="number-pad"
           maxLength={10}
+          //textAlign="center"
           style={{
             width: Dimensions.get('screen').width / 2,
             alignSelf: 'center',
@@ -135,7 +118,7 @@ const SignupNum = () => {
           }}>
           <TouchableOpacity
             activeOpacity={0.5}
-            onPress={() => navigation.navigate('Otp')}>
+            onPress={() => navigation.replace('Name')}>
             <Icon
               name="arrow-forward-outline"
               color="black"
@@ -165,7 +148,7 @@ const SignupNum = () => {
           Policy
         </Text>
       </View>
-    </View>
+    </>
   );
 };
 

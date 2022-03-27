@@ -16,6 +16,10 @@ target 'mydue' do
 
   pod 'RNSVG', :path => '../node_modules/react-native-svg'
 
+  pod 'react-native-date-picker', :path => '../node_modules/react-native-date-picker'
+
+  pod 'react-native-image-picker', :path => '../node_modules/react-native-image-picker'
+
   target 'mydueTests' do
     inherit! :complete
     # Pods for testing

@@ -17,7 +17,7 @@ import History from '../../components/History';
 const ChatScreenS = ({route, navigation}) => {
   useLayoutEffect(() => {
     navigation.setOptions({
-      title: `${route.params.name}`,
+      title: `${route?.params?.name}`,
       headerStyle: {
         backgroundColor: '#FFC300',
         fontFamily: 'ErasMediumITC',
@@ -58,7 +58,7 @@ const ChatScreenS = ({route, navigation}) => {
               top: 22,
             }}>
             <Text style={{color: 'black', fontFamily: 'ErasMediumITC'}}>
-              {route.params.number}
+              {route?.params?.number}
             </Text>
           </View>
           <View>
@@ -109,7 +109,7 @@ const ChatScreenS = ({route, navigation}) => {
                   color: 'black',
                   fontFamily: 'ErasMediumITC',
                 }}>
-                Balance
+                Due Balance
               </Text>
             </View>
             <View>
@@ -132,17 +132,34 @@ const ChatScreenS = ({route, navigation}) => {
         viewStyle1={styles.viewStyle1}
         viewText1={styles.viewText1}
       />
-      <Buttons
-        title={'Payment'}
-        buttonStyle={styles.buttonStyle}
-        iconName="arrow-up-outline"
-        onclick={() =>
-          navigation.navigate('Send', {
-            Cname: route.params.name,
-            Cnumber: route.params.number,
-          })
-        }
-      />
+      <View style={{flexDirection: 'row'}}>
+        <View style={{alignSelf: 'flex-end', backgroundColor: '#332FD0'}}>
+          <Buttons
+            title={'Add Bills'}
+            buttonStyle={styles.buttonStyle}
+            iconName="arrow-up-outline"
+            onclick={() =>
+              navigation.navigate('Send', {
+                Cname: route?.params?.name,
+                Cnumber: route?.params?.number,
+              })
+            }
+          />
+        </View>
+        <View style={{alignSelf: 'flex-start', backgroundColor: 'red'}}>
+          <Buttons
+            title={'Payment'}
+            buttonStyle={styles.buttonStyle2}
+            iconName="arrow-up-outline"
+            onclick={() =>
+              navigation.navigate('Send', {
+                Cname: route?.params?.name,
+                Cnumber: route?.params?.number,
+              })
+            }
+          />
+        </View>
+      </View>
     </>
   );
 };
@@ -152,8 +169,14 @@ export default ChatScreenS;
 const styles = StyleSheet.create({
   buttonStyle: {
     height: 50,
-    width: Dimensions.get('screen').width,
+    width: Dimensions.get('screen').width / 2,
+    backgroundColor: '#332FD0',
+  },
+  buttonStyle2: {
+    height: 50,
+    width: Dimensions.get('screen').width / 2,
     backgroundColor: 'red',
+    borderRadius: 0,
   },
   viewStyle: {
     flex: 1,
