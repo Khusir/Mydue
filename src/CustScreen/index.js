@@ -9,8 +9,9 @@ import {
   Platform,
   Linking,
   LogBox,
+  Image,
 } from 'react-native';
-import React, {useState, useEffect} from 'react';
+import React, {useState, useEffect, useRef} from 'react';
 //import {Button, List} from 'react-native-paper';
 import {ListItem, Avatar, Button} from 'react-native-elements';
 import {DATA} from '../../mockData';
@@ -18,13 +19,64 @@ import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import Contacts from 'react-native-contacts';
 import Permission from '../../components/Permission';
 import {useNavigation} from '@react-navigation/native';
+import {API_KEY} from '@env';
+import axios from 'axios';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import {useDispatch, useSelector} from 'react-redux';
+import {CUST_DATA} from '../../Redux/actionType';
+import {ActivityIndicator} from 'react-native-paper';
+import RBSheet from 'react-native-raw-bottom-sheet';
+import Icon1 from 'react-native-vector-icons/Ionicons';
 
 const CustomerScreen = ({navigation}) => {
   const [visible, setVisible] = useState(false);
+  const [userId, setUserId] = useState('');
+  const [loading, setLoading] = useState(false);
+  const [Cdata, setData] = useState([]);
   //const navigation = useNavigation();
+  const dispatch = useDispatch();
+  const cust = useSelector(state => state.cdata);
+  const user = useSelector(state => state.user_id);
+  const sheetRef = useRef();
 
   useEffect(() => {
     LogBox.ignoreLogs(['EventEmitter.removeListener']);
+  }, []);
+
+  //console.log({abc: cust});
+  //console.log({userMain: user});
+
+  const onCustomerData = async () => {
+    // getData();
+    setLoading(true);
+    await axios
+      .post(`${API_KEY}/getCustomerOrSupplierList`, {
+        //user_id: `${userId}`,
+        user_id: `${user}`,
+        customer_type: `customer`,
+      })
+      .then(response => {
+        dispatch({
+          type: CUST_DATA,
+          payload: response.data.data,
+        });
+        setLoading(false);
+      })
+      .catch(e => alert(e.message));
+  };
+
+  useEffect(() => {
+    const unsubscribe = navigation.addListener('focus', () => {
+      console.log('backed');
+      onCustomerData();
+    });
+    return () => {
+      unsubscribe;
+    };
+  }, [navigation]);
+
+  useEffect(() => {
+    onCustomerData();
   }, []);
 
   const onTigger = () => {
@@ -66,114 +118,85 @@ const CustomerScreen = ({navigation}) => {
 
   const renderList = ({item}) => (
     <View style={{flex: 1, justifyContent: 'center'}}>
-      <ListItem bottomDivider>
-        <ListItem.Swipeable
-          rightContent={
-            <View
-              style={{
-                backgroundColor: 'red',
-                height: 40,
-                borderRadius: 20,
-                width: 40,
-                alignSelf: 'center',
-                shadowOffset: 1,
-                zIndex: 100,
-                left: 10,
-                position: 'absolute',
-              }}>
-              <TouchableOpacity activeOpacity={0.8}>
-                <Icon
-                  name="delete"
-                  color={'white'}
-                  style={{
-                    alignSelf: 'center',
-                    justifyContent: 'center',
-                    top: 5,
-                    elevation: 50,
-                  }}
-                  size={30}
-                />
-              </TouchableOpacity>
-            </View>
-          }
-          containerStyle={{
-            flex: 1,
+      <ListItem
+        bottomDivider
+        onPress={() =>
+          navigation.navigate('Chat', {
+            name: item.customer_name,
+            number: item.customer_mobile,
+          })
+        }>
+        <ListItem.Content
+          style={{
+            //flex: 1,
             height: 40,
             justifyContent: 'center',
             alignItems: 'center',
             width: Dimensions.get('screen').width,
           }}>
-          <ListItem.Content>
-            <View
-              onTouchEnd={() =>
-                navigation.navigate('Chat', {
-                  name: item.name,
-                  number: item.number,
-                })
-              }
-              style={{
-                flex: 1,
-                flexDirection: 'row',
-                justifyContent: 'center',
-                //alignItems: 'center',
-                position: 'absolute',
-                left: -15,
-              }}>
-              <View>
-                <Avatar
-                  size={50}
-                  rounded
-                  title={item.name.charAt(0)}
-                  containerStyle={{
-                    //backgroundColor: '#3d4db7',
-                    backgroundColor: item.color,
-                    //opacity: 1,
-                  }}
-                />
-              </View>
-
-              <View>
-                <ListItem.Title
-                  style={{left: 10, top: 5, fontFamily: 'ErasMediumITC'}}>
-                  {item.name}
-                </ListItem.Title>
-              </View>
+          <View
+            style={{
+              flex: 1,
+              flexDirection: 'row',
+              justifyContent: 'center',
+              //alignItems: 'center',
+              position: 'absolute',
+              left: -5,
+            }}>
+            <View>
+              <Avatar
+                size={50}
+                rounded
+                title={item.customer_name.charAt(0)}
+                containerStyle={{
+                  backgroundColor: 'green',
+                  //backgroundColor: item.color,
+                  //opacity: 1,
+                }}
+              />
             </View>
 
-            <ListItem.Subtitle
-              style={{
-                position: 'absolute',
-                justifyContent: 'center',
-                alignSelf: 'center',
-                fontSize: 11,
-                top: 5,
-                left: 45,
-              }}>
-              {item.description}
-            </ListItem.Subtitle>
-          </ListItem.Content>
-          <ListItem.Content
+            <View>
+              <ListItem.Title
+                style={{left: 15, top: 5, fontFamily: 'ErasMediumITC'}}>
+                {item.customer_name}
+              </ListItem.Title>
+            </View>
+          </View>
+
+          <ListItem.Subtitle
             style={{
               position: 'absolute',
               justifyContent: 'center',
               alignSelf: 'center',
-              right: 30,
+              fontSize: 11,
+              top: 25,
+              left: 60,
             }}>
-            <View style={{flex: 1, flexDirection: 'column'}}>
-              <View>
-                <ListItem.Subtitle style={{fontSize: 12, color: 'green'}}>
-                  {`₹${item.amount}`}
-                </ListItem.Subtitle>
-              </View>
-              <View>
-                <ListItem.Subtitle
-                  style={{fontSize: 12, textAlign: 'right', color: 'grey'}}>
-                  {item.status}
-                </ListItem.Subtitle>
-              </View>
+            1000 Credit INR added on 12-03-2022
+          </ListItem.Subtitle>
+        </ListItem.Content>
+        <ListItem.Content
+          style={{
+            position: 'absolute',
+            justifyContent: 'center',
+            alignSelf: 'center',
+            right: 10,
+          }}>
+          <View style={{flex: 1, flexDirection: 'column'}}>
+            <View>
+              <ListItem.Subtitle style={{fontSize: 12, color: 'green'}}>
+                {`₹ 2000`}
+              </ListItem.Subtitle>
             </View>
-          </ListItem.Content>
-        </ListItem.Swipeable>
+            <View>
+              <ListItem.Subtitle
+                style={{fontSize: 12, textAlign: 'right', color: 'grey'}}>
+                Due
+              </ListItem.Subtitle>
+            </View>
+          </View>
+        </ListItem.Content>
       </ListItem>
     </View>
   );
@@ -181,13 +204,47 @@ const CustomerScreen = ({navigation}) => {
   return (
     <>
       <View>
-        <FlatList
-          keyExtractor={(item, index) => index.toString()}
-          data={DATA}
-          renderItem={renderList}
-          scrollEnabled={true}
-          contentContainerStyle={{paddingBottom: 50}}
-        />
+        {loading == false ? (
+          <FlatList
+            keyExtractor={(item, index) => index.toString()}
+            data={cust} //Cdata
+            renderItem={renderList}
+            scrollEnabled={true}
+            contentContainerStyle={{paddingBottom: 50}}
+            refreshing={true}
+          />
+        ) : (
+          <View
+            style={{
+              backgroundColor: 'white',
+              elevation: 20,
+              height: 90,
+              width: 100,
+              alignSelf: 'center',
+              position: 'absolute',
+              top: Dimensions.get('screen').height / 4,
+              justifyContent: 'center',
+              borderRadius: 10,
+            }}>
+            <View style={{flexDirection: 'column'}}>
+              <Image
+                source={require('../CustScreen/assets/loading.gif')}
+                style={{height: 80, width: 100}}
+                resizeMode="contain"
+              />
+              <View style={{alignSelf: 'center', top: -15}}>
+                <Text
+                  style={{
+                    color: 'black',
+                    fontSize: 15,
+                    fontFamily: 'ErasMediumITC',
+                  }}>
+                  Loading...
+                </Text>
+              </View>
+            </View>
+          </View>
+        )}
       </View>
       <View
         style={{
@@ -201,7 +258,8 @@ const CustomerScreen = ({navigation}) => {
           //   Linking.openURL('content://com.android.contacts/contacts')
           // }
           //onPress={onPermission}
-          onPress={onTigger}
+          //onPress={onTigger}
+          onPress={() => sheetRef.current.open()}
           icon={
             <Icon
               name="account-plus"
@@ -228,12 +286,13 @@ const CustomerScreen = ({navigation}) => {
           }}
         />
       </View>
-      <Permission
+      {/* <Permission
         visible={visible}
         visibleBackdrop={onTigger}
         visibleSwipe={onTigger}
         onClick={onNavigate}
-      />
+      /> */}
+      <Permission sheetRef={sheetRef} onclick={onNavigate} />
     </>
   );
 };

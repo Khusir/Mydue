@@ -25,13 +25,14 @@ import ChatScreen from './src/ChatScreen/index';
 import SendScreen from './src/SendScreen/index';
 import ChatScreenS from './src/ChatScreen/indexS';
 import Carousel from 'react-native-banner-carousel-updated';
+import {useSelector} from 'react-redux';
 
 const Stack = createNativeStackNavigator();
 const Tabs = createMaterialTopTabNavigator();
 
 const Routes = () => {
   const [visible, setVisible] = useState(false);
-
+  const auth = useSelector(state => state.user_id);
   const images = [
     'https://www.wordstream.com/wp-content/uploads/2021/07/banner-ads-examples-intro-liberty-university.jpg',
     'https://www.wordstream.com/wp-content/uploads/2021/07/banner-ads-examples-microsoft.jpg',
@@ -42,17 +43,15 @@ const Routes = () => {
   useEffect(() => {
     setTimeout(() => {
       setVisible(true);
-    }, 7000);
+    }, 3000);
     LogBox.ignoreLogs(['Animated: `useNativeDriver`']);
   }, []);
-
-  useEffect(() => {}, []);
 
   const renderPage = (image, index) => {
     return (
       <View key={index}>
         <Image
-          style={{width: Dimensions.get('screen').width, height: 45}}
+          style={{width: Dimensions.get('screen').width, height: 70}}
           source={{uri: image}}
           resizeMode="stretch"
         />
@@ -83,7 +82,11 @@ const Routes = () => {
         <Tabs.Navigator
           screenOptions={{
             lazy: true,
-            tabBarLabelStyle: {fontFamily: 'ErasMediumITC', fontSize: 13},
+            tabBarLabelStyle: {
+              fontFamily: 'ErasMediumITC',
+              fontSize: 15,
+              fontWeight: '600',
+            },
             swipeEnabled: false,
             tabBarItemStyle: {
               backgroundColor: '#FFC300',
@@ -94,11 +97,14 @@ const Routes = () => {
               backgroundColor: 'black',
               width: Dimensions.get('screen').width / 5,
               justifyContent: 'center',
-              left: 55,
-              flex: 1,
+              left: 53,
+              //flex: 1,
             },
             tabBarIndicatorContainerStyle: {
               zIndex: 100,
+            },
+            tabBarInactiveTintColor: {
+              color: 'white',
             },
           }}>
           <Tabs.Screen name="Customer" component={CustomerScreen} />
@@ -109,7 +115,7 @@ const Routes = () => {
   }
   return (
     <NavigationContainer>
-      <Stack.Navigator initialRouteName="Splash">
+      <Stack.Navigator initialRouteName="Main">
         <Stack.Screen
           name="Main"
           component={Home}

@@ -6,17 +6,48 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
-import React, {useLayoutEffect} from 'react';
+import React, {useLayoutEffect, useState, useEffect, useRef} from 'react';
 import {useNavigation} from '@react-navigation/native';
 import Icon from 'react-native-vector-icons/Ionicons';
 import Icon2 from 'react-native-vector-icons/MaterialIcons';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import {useDispatch, useSelector} from 'react-redux';
+import {LOG_OUT} from '../../Redux/actionType';
 
 const ProfileScreen = ({navigation}) => {
   //const navigation = useNavigation();
+  const [uName, setUname] = useState('');
+  const dispatch = useDispatch();
+  const username = useSelector(state => state.user_name);
+  // const getData = async () => {
+  //   // get Data from Storage
+  //   try {
+  //     const data = await AsyncStorage.getItem('userName');
+  //     if (data !== undefined) {
+  //       console.log(data);
+  //       setUname(data);
+  //       return data;
+  //     }
+  //   } catch (error) {
+  //     console.log(error);
+  //   }
+  // };
+
+  const onLogOut = async () => {
+    //await AsyncStorage.clear();
+    dispatch({
+      type: LOG_OUT,
+    });
+    navigation.navigate('Mobile');
+  };
+
+  useEffect(() => {
+    //getData();
+  }, []);
 
   useLayoutEffect(() => {
     navigation.setOptions({
-      title: 'Username',
+      title: `${username}`,
       headerStyle: {
         backgroundColor: '#FFC300',
         fontFamily: 'ErasMediumITC',
@@ -43,7 +74,7 @@ const ProfileScreen = ({navigation}) => {
         </View>
       ),
     });
-  }, [navigation]);
+  }, [navigation, uName]);
   return (
     <>
       <View style={{flex: 1, flexDirection: 'column', top: 30, left: 5}}>
@@ -219,7 +250,7 @@ const ProfileScreen = ({navigation}) => {
             />
           </View>
           <View>
-            <TouchableOpacity>
+            <TouchableOpacity onPress={onLogOut}>
               <Text
                 style={{
                   color: 'black',

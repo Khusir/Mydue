@@ -1,14 +1,34 @@
 import {StyleSheet, Text, View, Dimensions, Image} from 'react-native';
-import React, {useEffect} from 'react';
+import React, {useEffect, useState} from 'react';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import {useSelector} from 'react-redux';
 
 const SplashScreen = ({navigation}) => {
-  useEffect(() => {
-    let myTimeout = setTimeout(() => {
-      navigation.replace('Mobile');
-    }, 1500);
+  console.log({auth: auth});
+  const auth = useSelector(state => state.user_id);
+  const [data, setData] = useState('');
+  // useEffect(() => {
+  //   let myTimeout = setTimeout(() => {
+  //     //navigation.navigate('Mobile');
+  //     if (auth == null) {
+  //       return navigation.navigate('Mobile');
+  //     } else if (auth == undefined) {
+  //       return navigation.navigate('Mobile');
+  //     } else {
+  //       //navigation.navigate('Main');
+  //     }
+  //   }, 1500);
 
-    return () => clearTimeout(myTimeout);
-  }, []);
+  //   return () => clearTimeout(myTimeout);
+  // }, []);
+
+  // useEffect(() => {
+  //   if (auth !== undefined || null) {
+  //     navigation.replace('Main');
+  //   } else {
+  //     navigation.replace('Mobile');
+  //   }
+  // }, [auth]);
 
   return (
     <View style={styles.container}>

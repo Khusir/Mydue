@@ -15,6 +15,7 @@ import Buttons from '../../components/Buttons';
 import History from '../../components/History';
 
 const ChatScreenS = ({route, navigation}) => {
+  const ID = route?.params?.supplierId;
   useLayoutEffect(() => {
     navigation.setOptions({
       title: `${route?.params?.name}`,
@@ -70,6 +71,7 @@ const ChatScreenS = ({route, navigation}) => {
       ),
     });
   }, [navigation]);
+  console.log({ID: route.params.supplierId});
   return (
     <>
       <View
@@ -142,6 +144,7 @@ const ChatScreenS = ({route, navigation}) => {
               navigation.navigate('Send', {
                 Cname: route?.params?.name,
                 Cnumber: route?.params?.number,
+                Cid: ID,
               })
             }
           />
@@ -155,6 +158,7 @@ const ChatScreenS = ({route, navigation}) => {
               navigation.navigate('Send', {
                 Cname: route?.params?.name,
                 Cnumber: route?.params?.number,
+                Cid: route?.params?.supplierId,
               })
             }
           />

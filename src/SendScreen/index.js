@@ -7,6 +7,7 @@ import {
   TextInput,
   Platform,
   PermissionsAndroid,
+  Image,
 } from 'react-native';
 import React, {useLayoutEffect, useState} from 'react';
 import Icon from 'react-native-vector-icons/Ionicons';
@@ -15,14 +16,62 @@ import moment from 'moment';
 import {Button} from 'react-native-elements';
 import DatePicker from 'react-native-date-picker';
 import {launchCamera, launchImageLibrary} from 'react-native-image-picker';
+import {API_KEY} from '@env';
+import axios from 'axios';
+import {useSelector} from 'react-redux';
+import FormData from 'form-data';
 
 const SendScreen = ({navigation, route}) => {
   const [date, setDate] = useState(new Date());
   const [open, setOpen] = useState(false);
   const [filePath, setFilePath] = useState({});
+  const [amt, setAmt] = useState(0.0);
+  const [note, setNote] = useState('');
+
+  const userId = useSelector(state => state.user_id);
 
   const onTigger = () => {
     setOpen(!open);
+  };
+
+  console.log({img: filePath});
+  console.log({datePicker: date.toISOString().split('T')[0]});
+
+  // const onSending = async () => {
+  //   await axios
+  //     .post(`${API_KEY}/createTransaction`, {
+  //       sendfile: `${filePath}`,
+  //       amount: `${amt}`,
+  //       note: `${note}`,
+  //       user_id: `${userId}`,
+  //       date: `${date}`,
+  //       customer_supplier_id: `${route?.params?.supplierId}`,
+  //       payment_type: 'payment',
+  //     })
+  //     .then(response => console.log(response.data))
+  //     .catch(e => alert(e.message));
+  // };
+  //console.log({ID: route?.params?.Cid});
+
+  const onSending = async () => {
+    let form = new FormData();
+    form.append('sendfile', `${filePath}`);
+    form.append('amount', `${amt}`);
+    form.append('note', `${note}`);
+    form.append('user_id', `${userId}`);
+    form.append(`date`, `${date.toISOString().split('T')[0]}`);
+    form.append('customer_supplier_id', `${route?.params?.Cid}`);
+    form.append(`payment_type`, 'payment');
+
+    console.log(form);
+    await axios({
+      method: 'post',
+      data: form,
+      //data: form,
+      url: `${API_KEY}/createTransaction`,
+      headers: {'Content-Type': 'multipart/form-data'},
+      // headers: form.getHeaders(),
+    }).then(response => console.log(response.data));
   };
 
   const requestCameraPermission = async () => {
@@ -65,11 +114,11 @@ const SendScreen = ({navigation, route}) => {
   const captureImage = async type => {
     let options = {
       mediaType: type,
-      maxWidth: 300,
-      maxHeight: 550,
+      maxWidth: 1000,
+      maxHeight: 1000,
       quality: 1,
-      videoQuality: 'low',
-      durationLimit: 30, //Video max duration in seconds
+      //videoQuality: 'low',
+      //durationLimit: 30, //Video max duration in seconds
       saveToPhotos: true,
     };
     let isCameraPermitted = await requestCameraPermission();
@@ -91,9 +140,9 @@ const SendScreen = ({navigation, route}) => {
           alert(response.errorMessage);
           return;
         }
-        console.log('base64 -> ', response.base64);
-        console.log('uri -> ', response.uri);
-        setFilePath(response);
+        //console.log('base64 -> ', response.base64);
+        //console.log('uri -> ', response.uri);
+        setFilePath(response.assets?.[0].fileName);
       });
     }
   };
@@ -101,8 +150,8 @@ const SendScreen = ({navigation, route}) => {
   const chooseFile = type => {
     let options = {
       mediaType: type,
-      maxWidth: 300,
-      maxHeight: 600,
+      maxWidth: 1000,
+      maxHeight: 1000,
       quality: 1,
     };
     launchImageLibrary(options, response => {
@@ -121,9 +170,9 @@ const SendScreen = ({navigation, route}) => {
         alert(response.errorMessage);
         return;
       }
-      console.log('base64 -> ', response.base64);
-      console.log('uri -> ', response.uri);
-      setFilePath(response);
+      //console.log('base64 -> ', response.base64);
+      //console.log('uri -> ', response.uri);
+      setFilePath(response.assets?.[0].fileName);
     });
   };
 
@@ -196,21 +245,9 @@ const SendScreen = ({navigation, route}) => {
           justifyContent: 'center',
           elevation: 10,
           borderRadius: 5,
-          //shadowColor: 'black',
-          //shadowOpacity: 1,
-          //shadowOffset: 20,
-          //shadowRadius: 100,
         }}>
         <View style={{flexDirection: 'row'}}>
           <View style={{justifyContent: 'center', marginHorizontal: 19.5}}>
-            {/* <Text
-              style={{
-                color: 'black',
-                fontSize: 25,
-                fontFamily: 'ErasMediumITC',
-              }}>
-              ₹
-            </Text> */}
             <Icon2 name="upload-file" color={'black'} size={25} />
           </View>
           <View
@@ -219,22 +256,7 @@ const SendScreen = ({navigation, route}) => {
               height: 25,
               alignSelf: 'center',
             }}></View>
-          {/* <TextInput
-            placeholder="Amount"
-            placeholderTextColor="grey"
-            selectionColor="black"
-            keyboardType="number-pad"
-            maxLength={10}
-            style={{
-              //borderWidth: 0.2,
-              left: 20,
-              width: Dimensions.get('screen').width / 1.7,
-              color: 'black',
-              fontSize: 18,
-              fontFamily: 'ErasMediumITC',
-              letterSpacing: 5,
-            }}
-          /> */}
+
           <TouchableOpacity onPress={() => chooseFile('photo')}>
             <Text
               style={{
@@ -291,21 +313,9 @@ const SendScreen = ({navigation, route}) => {
           justifyContent: 'center',
           elevation: 10,
           borderRadius: 5,
-          //shadowColor: 'black',
-          //shadowOpacity: 1,
-          //shadowOffset: 20,
-          //shadowRadius: 100,
         }}>
         <View style={{flexDirection: 'row'}}>
           <View style={{justifyContent: 'center', marginHorizontal: 19.5}}>
-            {/* <Text
-              style={{
-                color: 'black',
-                fontSize: 25,
-                fontFamily: 'ErasMediumITC',
-              }}>
-              ₹
-            </Text> */}
             <Icon name="camera-outline" color={'black'} size={25} />
           </View>
           <View
@@ -314,22 +324,7 @@ const SendScreen = ({navigation, route}) => {
               height: 25,
               alignSelf: 'center',
             }}></View>
-          {/* <TextInput
-            placeholder="Amount"
-            placeholderTextColor="grey"
-            selectionColor="black"
-            keyboardType="number-pad"
-            maxLength={10}
-            style={{
-              //borderWidth: 0.2,
-              left: 20,
-              width: Dimensions.get('screen').width / 1.7,
-              color: 'black',
-              fontSize: 18,
-              fontFamily: 'ErasMediumITC',
-              letterSpacing: 5,
-            }}
-          /> */}
+
           <TouchableOpacity onPress={() => captureImage('photo')}>
             <Text
               style={{
@@ -358,10 +353,6 @@ const SendScreen = ({navigation, route}) => {
           justifyContent: 'center',
           elevation: 10,
           borderRadius: 5,
-          //shadowColor: 'black',
-          //shadowOpacity: 1,
-          //shadowOffset: 20,
-          //shadowRadius: 100,
         }}>
         <View style={{flexDirection: 'row'}}>
           <View style={{justifyContent: 'center', marginHorizontal: 25}}>
@@ -381,6 +372,8 @@ const SendScreen = ({navigation, route}) => {
               alignSelf: 'center',
             }}></View>
           <TextInput
+            value={amt}
+            onChangeText={text => setAmt(text)}
             placeholder="Amount"
             placeholderTextColor="grey"
             selectionColor="black"
@@ -410,10 +403,6 @@ const SendScreen = ({navigation, route}) => {
           justifyContent: 'center',
           elevation: 10,
           borderRadius: 5,
-          //shadowColor: 'black',
-          //shadowOpacity: 1,
-          //shadowOffset: 20,
-          //shadowRadius: 100,
         }}>
         <View style={{flexDirection: 'row'}}>
           <View style={{justifyContent: 'center', marginHorizontal: 12}}>
@@ -442,6 +431,7 @@ const SendScreen = ({navigation, route}) => {
                 }}>
                 {date.toDateString('en-us')}
               </Text>
+              {/* //toISOString().split('T')[0] */}
             </TouchableOpacity>
           </View>
         </View>
@@ -476,11 +466,7 @@ const SendScreen = ({navigation, route}) => {
           //alignSelf: 'center',
           justifyContent: 'center',
           elevation: 5,
-          //borderRadius: 5,
-          //shadowColor: 'black',
-          //shadowOpacity: 1,
-          //shadowOffset: 20,
-          //shadowRadius: 100,
+
           bottom: Dimensions.get('screen').height / 300,
         }}>
         <View style={{flexDirection: 'row'}}>
@@ -495,6 +481,8 @@ const SendScreen = ({navigation, route}) => {
               borderRadius: 5,
             }}>
             <TextInput
+              value={note}
+              onChangeText={text => setNote(text)}
               placeholder="Add note"
               placeholderTextColor="grey"
               style={{
@@ -514,6 +502,7 @@ const SendScreen = ({navigation, route}) => {
               left: Dimensions.get('screen').width / 1.25,
             }}>
             <Button
+              onPress={onSending}
               title="Save"
               buttonStyle={{
                 height: 60,

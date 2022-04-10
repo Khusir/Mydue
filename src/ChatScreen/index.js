@@ -69,7 +69,7 @@ const ChatScreen = ({route, navigation}) => {
         </>
       ),
     });
-  }, [navigation]);
+  }, [navigation, route]);
   return (
     <>
       <View

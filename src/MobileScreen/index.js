@@ -8,12 +8,82 @@ import {
   KeyboardAvoidingView,
   TouchableOpacity,
 } from 'react-native';
-import React from 'react';
+import React, {useState} from 'react';
 import Icon from 'react-native-vector-icons/Ionicons';
 import {useNavigation} from '@react-navigation/native';
+import {API_KEY} from '@env';
+import axios from 'axios';
+import Snackbar from 'react-native-snackbar';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import {ActivityIndicator} from 'react-native-paper';
+import {useDispatch, useSelector} from 'react-redux';
+import {LOGIN_DATA, PROFILE_DATA} from '../../Redux/actionType';
 
 const SignupNum = () => {
   const navigation = useNavigation();
+  const [mNum, setMnum] = useState('');
+  const [visible, setVisible] = useState(false);
+  const dispatch = useDispatch();
+  const user = useSelector(state => state.user_id);
+  const name = useSelector(state => state.user_name);
+  console.log({user: user});
+  console.log({name: name});
+
+  const onSignIn = async () => {
+    try {
+      if (!mNum) {
+        Snackbar.show({
+          text: 'please Enter Mobile Number',
+          duration: Snackbar.LENGTH_SHORT,
+          fontFamily: 'ErasMediumITC',
+          backgroundColor: '#FFC300',
+          textColor: 'black',
+        });
+        return;
+      } else if (mNum.length !== 10) {
+        Snackbar.show({
+          text: 'Enter Valid Number',
+          duration: Snackbar.LENGTH_SHORT,
+          fontFamily: 'ErasMediumITC',
+          backgroundColor: '#FFC300',
+          textColor: 'black',
+        });
+        return;
+      }
+      setVisible(true);
+      await axios
+        .post(`${API_KEY}/signin`, {
+          user_mobile: `${mNum}`,
+        })
+        .then(response => {
+          console.log(response.data);
+          if (response.data.status == 200) {
+            dispatch({
+              type: LOGIN_DATA,
+              payload: response.data.data?.[0].user_id,
+            });
+            dispatch({
+              type: PROFILE_DATA,
+              payload: response.data.data?.[0].user_name,
+            });
+            navigation.navigate('Main');
+            setVisible(false);
+          } else {
+            setVisible(false);
+            Snackbar.show({
+              text: `${response.data.status_message}`,
+              duration: Snackbar.LENGTH_SHORT,
+              fontFamily: 'ErasMediumITC',
+              backgroundColor: '#FFC300',
+              textColor: 'black',
+            });
+            return;
+          }
+        });
+    } catch (e) {
+      throw e;
+    }
+  };
 
   return (
     <>
@@ -90,7 +160,9 @@ const SignupNum = () => {
           <Icon name="chevron-down-outline" color="black" size={18} />
         </View>
         <TextInput
-          //value={mob}
+          value={mNum}
+          onChangeText={text => setMnum(text)}
+          //onSubmitEditing={onSignIn}
           placeholder="Mobile Number"
           placeholderTextColor={'grey'}
           keyboardType="number-pad"
@@ -117,17 +189,53 @@ const SignupNum = () => {
             right: 10,
           }}>
           <TouchableOpacity
+            hitSlop={{bottom: 10}}
             activeOpacity={0.5}
-            onPress={() => navigation.replace('Name')}>
-            <Icon
-              name="arrow-forward-outline"
-              color="black"
-              size={30}
-              style={{alignSelf: 'center', top: 6}}
-            />
+            //onPress={() => navigation.replace('Name')}
+            onPress={onSignIn}>
+            {visible == false ? (
+              <Icon
+                name="arrow-forward-outline"
+                color="black"
+                size={30}
+                style={{alignSelf: 'center', top: 6}}
+              />
+            ) : (
+              <ActivityIndicator
+                animating={visible}
+                color="black"
+                size={'small'}
+                style={{top: 10}}
+                hidesWhenStopped={visible}
+              />
+            )}
           </TouchableOpacity>
         </View>
       </View>
+
+      <View
+        style={{
+          justifyContent: 'center',
+          alignSelf: 'center',
+          //flex: 1,
+          //elevation: 50,
+          top: Dimensions.get('screen').height / 4.2,
+        }}>
+        <TouchableOpacity
+          onPress={() => navigation.navigate('Name')}
+          activeOpacity={0.5}>
+          <Text
+            style={{
+              color: '#FFC100',
+              fontFamily: 'ErasMediumITC',
+              textDecorationLine: 'underline',
+              fontSize: 16,
+            }}>
+            New User? Create an Account
+          </Text>
+        </TouchableOpacity>
+      </View>
+
       <View
         style={{
           position: 'absolute',
