@@ -66,6 +66,7 @@ const SupplierScreen = ({navigation}) => {
         })
         .then(response => {
           console.log(response.data);
+          setLoading(false);
           if (response.data.status == 200) {
             Snackbar.show({
               text: 'Contact Added successfully.',
@@ -74,6 +75,7 @@ const SupplierScreen = ({navigation}) => {
               fontFamily: 'ErasMediumITC',
             });
           } else {
+            setLoading(false);
             Snackbar.show({
               text: 'Contact Already Added.',
               textColor: 'black',
@@ -137,12 +139,15 @@ const SupplierScreen = ({navigation}) => {
   };
 
   const loadContacts = () => {
+    setLoading(true);
     Contacts.getAll()
       .then(contacts => {
         contacts.sort(
           (a, b) => a.givenName.toLowerCase() > b.givenName.toLowerCase(),
         );
+
         setContacts(contacts);
+        setLoading(false);
         //console.log(contacts);
       })
       .catch(e => {
@@ -160,15 +165,18 @@ const SupplierScreen = ({navigation}) => {
     const phoneNumberRegex =
       /\b[\+]?[(]?[0-9]{2,6}[)]?[-\s\.]?[-\s\/\.0-9]{3,15}\b/m;
     if (text === '' || text === null) {
+      setLoading(true);
       loadContacts();
+      setLoading(false);
     } else if (phoneNumberRegex.test(text)) {
+      setLoading(true);
       Contacts.getContactsByPhoneNumber(text).then(contacts => {
         contacts.sort(
           (a, b) => a.givenName.toLowerCase() > b.givenName.toLowerCase(),
         );
 
         setContacts(contacts);
-
+        setLoading(false);
         console.log('contacts', contacts);
       });
     } else {
@@ -386,48 +394,49 @@ const SupplierScreen = ({navigation}) => {
             placeholder="Search Contact"
             onChangeText={search}
           />
-          <FlatList
-            data={contacts}
-            style={{top: 5}}
-            keyExtractor={item => item.recordID}
-            renderItem={({item}) => {
-              {
-                //console.log('contact -> ' + JSON.stringify(item));
-              }
-              return (
-                <>
-                  <ListItem bottomDivider onPress={() => onAddContact(item)}>
-                    <ListItem.Content
-                      style={{
-                        height: 40,
-                        justifyContent: 'center',
-                        alignItems: 'flex-start',
-                        width: Dimensions.get('screen').width,
-                      }}>
-                      <View
+          {loading == false ? (
+            <FlatList
+              data={contacts}
+              style={{top: 5}}
+              keyExtractor={item => item.recordID}
+              renderItem={({item}) => {
+                {
+                  //console.log('contact -> ' + JSON.stringify(item));
+                }
+                return (
+                  <>
+                    <ListItem bottomDivider onPress={() => onAddContact(item)}>
+                      <ListItem.Content
                         style={{
-                          flex: 1,
-                          flexDirection: 'row',
+                          height: 40,
                           justifyContent: 'center',
-                          //alignItems: 'center',
-                          position: 'absolute',
-                          left: -5,
+                          alignItems: 'flex-start',
+                          width: Dimensions.get('screen').width,
                         }}>
-                        <View>
-                          <Avatar
-                            size={50}
-                            rounded
-                            title={`${item.displayName.charAt(0)}`}
-                            containerStyle={{
-                              backgroundColor: 'green',
-                              //backgroundColor: item.color,
-                              //opacity: 1,
-                            }}
-                          />
+                        <View
+                          style={{
+                            flex: 1,
+                            flexDirection: 'row',
+                            justifyContent: 'center',
+                            //alignItems: 'center',
+                            position: 'absolute',
+                            left: -5,
+                          }}>
+                          <View>
+                            <Avatar
+                              size={50}
+                              rounded
+                              title={`${item.displayName.charAt(0)}`}
+                              containerStyle={{
+                                backgroundColor: 'green',
+                                //backgroundColor: item.color,
+                                //opacity: 1,
+                              }}
+                            />
+                          </View>
                         </View>
-                      </View>
 
-                      {/* <ListItem.Title
+                        {/* <ListItem.Title
                         style={{
                           left: 60,
                           top: 0,
@@ -439,29 +448,61 @@ const SupplierScreen = ({navigation}) => {
                           : item.displayName}
                       </ListItem.Title> */}
 
-                      <ListItem.Title
-                        style={{
-                          left: 60,
-                          top: 0,
-                          fontFamily: 'ErasMediumITC',
-                          fontSize: 18,
-                        }}>
-                        {item.givenName == item.phoneNumbers?.[0]?.number
-                          ? 'No Name'
-                          : `${item.givenName} ${item.familyName}`}
-                      </ListItem.Title>
-                      <ListItem.Subtitle
-                        style={{
-                          left: 60,
-                        }}>
-                        {item.phoneNumbers?.[0]?.number}
-                      </ListItem.Subtitle>
-                    </ListItem.Content>
-                  </ListItem>
-                </>
-              );
-            }}
-          />
+                        <ListItem.Title
+                          style={{
+                            left: 60,
+                            top: 0,
+                            fontFamily: 'ErasMediumITC',
+                            fontSize: 18,
+                          }}>
+                          {item.givenName == item.phoneNumbers?.[0]?.number
+                            ? 'No Name'
+                            : `${item.givenName} ${item.familyName}`}
+                        </ListItem.Title>
+                        <ListItem.Subtitle
+                          style={{
+                            left: 60,
+                          }}>
+                          {item.phoneNumbers?.[0]?.number}
+                        </ListItem.Subtitle>
+                      </ListItem.Content>
+                    </ListItem>
+                  </>
+                );
+              }}
+            />
+          ) : (
+            <View
+              style={{
+                backgroundColor: 'white',
+                elevation: 20,
+                height: 90,
+                width: 100,
+                alignSelf: 'center',
+                position: 'absolute',
+                top: Dimensions.get('screen').height / 4,
+                justifyContent: 'center',
+                borderRadius: 10,
+              }}>
+              <View style={{flexDirection: 'column'}}>
+                <Image
+                  source={require('../CustScreen/assets/loading.gif')}
+                  style={{height: 80, width: 100}}
+                  resizeMode="contain"
+                />
+                <View style={{alignSelf: 'center', top: -15}}>
+                  <Text
+                    style={{
+                      color: 'black',
+                      fontSize: 15,
+                      fontFamily: 'ErasMediumITC',
+                    }}>
+                    Loading...
+                  </Text>
+                </View>
+              </View>
+            </View>
+          )}
         </View>
       </RBSheet>
 

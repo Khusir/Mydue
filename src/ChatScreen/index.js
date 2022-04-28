@@ -7,15 +7,54 @@ import {
   ScrollView,
   Linking,
 } from 'react-native';
-import React, {useLayoutEffect} from 'react';
+import React, {useLayoutEffect, useEffect} from 'react';
 import Icon from 'react-native-vector-icons/Ionicons';
 import Icon2 from 'react-native-vector-icons/MaterialIcons';
 import moment from 'moment';
 import {Button} from 'react-native-elements';
 import Buttons from '../../components/Buttons';
 import History from '../../components/History';
+import {useSelector, useDispatch} from 'react-redux';
+import axios from 'axios';
+import {API_KEY} from 'react-native-dotenv';
+import {PAY_HISTORY, REC_HISTORY} from '../../Redux/actionType';
 
 const ChatScreen = ({route, navigation}) => {
+  const user = useSelector(state => state.user_id);
+  const dispatch = useDispatch();
+  const rec = useSelector(state => state.recHistory);
+  const ID = route.params.supplierId;
+
+  const onPayHistory = async () => {
+    await axios
+      .post(`${API_KEY}/getTxnRecords`, {
+        user_id: `${user}`,
+        customer_supplier_id: `${ID}`,
+        payment_type: 'received',
+      })
+      .then(response => {
+        console.log(response.data.data);
+        dispatch({
+          type: REC_HISTORY,
+          payload: response.data.data,
+        });
+      })
+      .catch(e => e.message);
+  };
+  console.log({rec: rec});
+  useEffect(() => {
+    onPayHistory();
+  }, []);
+  useEffect(() => {
+    const unsubscribe = navigation.addListener('focus', () => {
+      console.log('backed');
+      onPayHistory();
+    });
+    return () => {
+      unsubscribe;
+    };
+  }, [navigation]);
+
   useLayoutEffect(() => {
     navigation.setOptions({
       title: `${route?.params?.name}`,
@@ -145,6 +184,7 @@ const ChatScreen = ({route, navigation}) => {
         </View>
       </View>
       <History
+        payData={rec}
         viewStyle={styles.viewStyle}
         containerStyle={styles.containerStyle}
         timestampView={styles.timestampView}
@@ -162,6 +202,8 @@ const ChatScreen = ({route, navigation}) => {
               navigation.navigate('Send', {
                 Cname: route?.params?.name,
                 Cnumber: route?.params?.number,
+                Cid: route?.params.supplierId,
+                type: 'payment',
               })
             }
           />
@@ -175,6 +217,8 @@ const ChatScreen = ({route, navigation}) => {
               navigation.navigate('Send', {
                 Cname: route?.params?.name,
                 Cnumber: route?.params?.number,
+                Cid: route?.params.supplierId,
+                type: 'received',
               })
             }
           />

@@ -5,6 +5,8 @@ import {
   PROFILE_DATA,
   REG_DATA,
   SUPP_DATA,
+  PAY_HISTORY,
+  REC_HISTORY,
 } from './actionType';
 
 const initialState = {
@@ -13,6 +15,8 @@ const initialState = {
   loginData: [],
   user_id: '',
   user_name: '',
+  payHistory: [],
+  recHistory: [],
 };
 
 const contactListReducer = (state = initialState, action) => {
@@ -22,6 +26,12 @@ const contactListReducer = (state = initialState, action) => {
     }
     case SUPP_DATA: {
       return {...state, sdata: action.payload};
+    }
+    case PAY_HISTORY: {
+      return {...state, payHistory: action.payload};
+    }
+    case REC_HISTORY: {
+      return {...state, recHistory: action.payload};
     }
     case LOGIN_DATA: {
       return {

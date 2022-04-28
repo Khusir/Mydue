@@ -9,7 +9,7 @@ import {
   PermissionsAndroid,
   Image,
 } from 'react-native';
-import React, {useLayoutEffect, useState} from 'react';
+import React, {useLayoutEffect, useState, useEffect} from 'react';
 import Icon from 'react-native-vector-icons/Ionicons';
 import Icon2 from 'react-native-vector-icons/MaterialIcons';
 import moment from 'moment';
@@ -27,7 +27,8 @@ const SendScreen = ({navigation, route}) => {
   const [filePath, setFilePath] = useState({});
   const [amt, setAmt] = useState('');
   const [note, setNote] = useState('');
-
+  const [loading, setLoading] = useState(false);
+  const [imgFile, setImgFile] = useState('');
   const userId = useSelector(state => state.user_id);
 
   const onTigger = () => {
@@ -38,6 +39,17 @@ const SendScreen = ({navigation, route}) => {
   //console.log({datePicker: date.toISOString().split('T')[0]});
 
   const onSending = async () => {
+    if (!amt) {
+      Snackbar.show({
+        text: `Please Enter The Amount. `,
+        duration: Snackbar.LENGTH_SHORT,
+        fontFamily: 'ErasMediumITC',
+        backgroundColor: '#FFC300',
+        textColor: 'black',
+      });
+      return;
+    }
+    setLoading(true);
     await axios
       .post(`${API_KEY}/createTransaction`, {
         sendfile: `${filePath}`,
@@ -46,9 +58,10 @@ const SendScreen = ({navigation, route}) => {
         user_id: `${userId}`,
         date: `${date.toISOString().split('T')[0]}`,
         customer_supplier_id: `${route.params.Cid}`,
-        payment_type: 'payment',
+        payment_type: `${route.params.type}`,
       })
       .then(response => {
+        setLoading(false);
         Snackbar.show({
           text: `${response.data.status_message}`,
           duration: Snackbar.LENGTH_SHORT,
@@ -56,32 +69,16 @@ const SendScreen = ({navigation, route}) => {
           backgroundColor: '#FFC300',
           textColor: 'black',
         });
+        setAmt('');
+        setFilePath({});
+        setNote('');
         //console.log(response.data);
       })
       .catch(e => alert(e.message));
   };
+  useEffect(() => {}, [date]);
+
   //console.log({ID: route?.params?.Cid});
-
-  // let data = new FormData();
-  // data.append('sendfile', RNFS.DocumentDirectoryPath + `${filePath}`);
-  // data.append('amount', `${amt}`);
-  // data.append('note', `${note}`);
-  // data.append('user_id', `${userId}`);
-  // data.append(`date`, `${date.toISOString().split('T')[0]}`);
-  // data.append('customer_supplier_id', `${route?.params?.Cid}`);
-  // data.append(`payment_type`, 'payment');
-
-  // var config = {
-  //   method: 'post',
-  //   url: `${API_KEY}/createTransaction`,
-  //   data: data,
-  // };
-  // const onSending = async () => {
-  //   console.log(data);
-  //   await axios(config).then(response =>
-  //     console.log(JSON.stringify(response.data)),
-  //   );
-  // };
 
   const requestCameraPermission = async () => {
     if (Platform.OS === 'android') {
@@ -123,8 +120,8 @@ const SendScreen = ({navigation, route}) => {
   const captureImage = async type => {
     let options = {
       mediaType: type,
-      maxWidth: 1000,
-      maxHeight: 1000,
+      maxWidth: Dimensions.get('screen').width,
+      maxHeight: Dimensions.get('screen').height,
       quality: 1,
       //videoQuality: 'low',
       //durationLimit: 30, //Video max duration in seconds
@@ -178,8 +175,9 @@ const SendScreen = ({navigation, route}) => {
           });
           return;
         }
-        //console.log('base64 -> ', response.base64);
+        console.log('base64 -> ', response.assets?.[0].base64);
         //console.log('uri -> ', response.uri);
+        setImgFile(response.assets?.[0].fileName.split('_').slice(-1, 28));
         setFilePath(response.assets?.[0].base64);
       });
     }
@@ -239,8 +237,9 @@ const SendScreen = ({navigation, route}) => {
       }
       //console.log('base64 -> ', response.base64);
       //console.log('uri -> ', response.uri);
-      //console.log('base64 ->', response.assets?.[0].base64);
+      //console.log('base64 ->', response.assets?.[0].fileName);
       setFilePath(response.assets?.[0].base64);
+      setImgFile(response.assets?.[0].fileName.split('_').slice(-1, 28));
     });
   };
 
@@ -286,9 +285,9 @@ const SendScreen = ({navigation, route}) => {
               right: Dimensions.get('screen').width / 1.85,
               top: 22,
             }}>
-            <Text style={{color: 'black', fontFamily: 'ErasMediumITC'}}>
+            {/* <Text style={{color: 'black', fontFamily: 'ErasMediumITC'}}>
               {route?.params?.Cnumber}
-            </Text>
+            </Text> */}
           </View>
           <View>
             <TouchableOpacity>
@@ -301,287 +300,333 @@ const SendScreen = ({navigation, route}) => {
   }, [navigation]);
   return (
     <>
-      <View
-        style={{
-          flex: 1,
-          position: 'absolute',
-          backgroundColor: 'white',
-          height: Dimensions.get('screen').height / 17,
-          width: Dimensions.get('screen').width / 1.3,
-          top: Dimensions.get('screen').height / 15,
-          alignSelf: 'center',
-          justifyContent: 'center',
-          elevation: 10,
-          borderRadius: 5,
-        }}>
-        <View style={{flexDirection: 'row'}}>
-          <View style={{justifyContent: 'center', marginHorizontal: 19.5}}>
-            <Icon2 name="upload-file" color={'black'} size={25} />
-          </View>
+      {loading == false ? (
+        <>
           <View
             style={{
-              borderWidth: 0.5,
-              height: 25,
-              alignSelf: 'center',
-            }}></View>
-
-          <TouchableOpacity onPress={() => chooseFile('photo')}>
-            <Text
-              style={{
-                color: 'black',
-                fontSize: 18,
-                fontFamily: 'ErasMediumITC',
-                //left: 25,
-                marginHorizontal: 25,
-                top: 3,
-              }}>
-              Upload Bill
-            </Text>
-          </TouchableOpacity>
-        </View>
-      </View>
-
-      <View
-        style={{
-          justifyContent: 'center',
-          alignSelf: 'center',
-          top: 105,
-          flexDirection: 'row',
-        }}>
-        <View
-          style={{
-            borderWidth: 0.2,
-            borderColor: 'black',
-            width: 50,
-            height: 0.3,
-            alignSelf: 'center',
-            marginHorizontal: 10,
-          }}></View>
-        <Text style={{color: 'black', fontFamily: 'ErasMediumITC'}}>Or</Text>
-        <View
-          style={{
-            borderWidth: 0.2,
-            borderColor: 'black',
-            width: 50,
-            height: 0.3,
-            alignSelf: 'center',
-            marginHorizontal: 10,
-          }}></View>
-      </View>
-
-      <View
-        style={{
-          flex: 1,
-          position: 'absolute',
-          backgroundColor: 'white',
-          height: Dimensions.get('screen').height / 17,
-          width: Dimensions.get('screen').width / 1.3,
-          top: Dimensions.get('screen').height / 6,
-          alignSelf: 'center',
-          justifyContent: 'center',
-          elevation: 10,
-          borderRadius: 5,
-        }}>
-        <View style={{flexDirection: 'row'}}>
-          <View style={{justifyContent: 'center', marginHorizontal: 19.5}}>
-            <Icon name="camera-outline" color={'black'} size={25} />
-          </View>
-          <View
-            style={{
-              borderWidth: 0.5,
-              height: 25,
-              alignSelf: 'center',
-            }}></View>
-
-          <TouchableOpacity onPress={() => captureImage('photo')}>
-            <Text
-              style={{
-                color: 'black',
-                fontSize: 18,
-                fontFamily: 'ErasMediumITC',
-                //left: 25,
-                marginHorizontal: 25,
-                top: 3,
-              }}>
-              Take Photo
-            </Text>
-          </TouchableOpacity>
-        </View>
-      </View>
-
-      <View
-        style={{
-          flex: 1,
-          position: 'absolute',
-          backgroundColor: 'white',
-          height: Dimensions.get('screen').height / 17,
-          width: Dimensions.get('screen').width / 1.3,
-          top: Dimensions.get('screen').height / 3.5,
-          alignSelf: 'center',
-          justifyContent: 'center',
-          elevation: 10,
-          borderRadius: 5,
-        }}>
-        <View style={{flexDirection: 'row'}}>
-          <View style={{justifyContent: 'center', marginHorizontal: 25}}>
-            <Text
-              style={{
-                color: 'black',
-                fontSize: 25,
-                fontFamily: 'ErasMediumITC',
-              }}>
-              ₹
-            </Text>
-          </View>
-          <View
-            style={{
-              borderWidth: 0.5,
-              height: 25,
-              alignSelf: 'center',
-            }}></View>
-          <TextInput
-            value={amt.toString()}
-            onChangeText={text => setAmt(text)}
-            placeholder="Amount"
-            placeholderTextColor="grey"
-            selectionColor="black"
-            keyboardType="number-pad"
-            maxLength={10}
-            style={{
-              //borderWidth: 0.2,
-              left: 20,
-              width: Dimensions.get('screen').width / 1.7,
-              color: 'black',
-              fontSize: 18,
-              fontFamily: 'ErasMediumITC',
-              letterSpacing: 5,
-            }}
-          />
-        </View>
-      </View>
-      <View
-        style={{
-          flex: 1,
-          position: 'absolute',
-          backgroundColor: 'white',
-          height: Dimensions.get('screen').height / 17,
-          width: Dimensions.get('screen').width / 1.3,
-          top: Dimensions.get('screen').height / 2.8,
-          alignSelf: 'center',
-          justifyContent: 'center',
-          elevation: 10,
-          borderRadius: 5,
-        }}>
-        <View style={{flexDirection: 'row'}}>
-          <View style={{justifyContent: 'center', marginHorizontal: 12}}>
-            <Text
-              style={{
-                color: 'black',
-                fontSize: 18,
-                fontFamily: 'ErasMediumITC',
-              }}>
-              Date
-            </Text>
-          </View>
-          <View
-            style={{
-              borderWidth: 0.5,
-              height: 25,
-              alignSelf: 'center',
-            }}></View>
-          <View style={{justifyContent: 'center', left: 20}}>
-            <TouchableOpacity onPress={onTigger}>
-              <Text
-                style={{
-                  color: 'grey',
-                  fontSize: 18,
-                  fontFamily: 'ErasMediumITC',
-                }}>
-                {date.toDateString('en-us')}
-              </Text>
-              {/* //toISOString().split('T')[0] */}
-            </TouchableOpacity>
-          </View>
-        </View>
-      </View>
-
-      <DatePicker
-        modal
-        mode="date"
-        date={date}
-        open={open}
-        onConfirm={date => {
-          setOpen(false);
-          setDate(date);
-        }}
-        onCancel={() => {
-          setOpen(false);
-        }}
-        theme="auto"
-        title="Select Date"
-        androidVariant="nativeAndroid"
-        locale="en-us"
-      />
-
-      <View
-        style={{
-          flex: 1,
-          position: 'absolute',
-          backgroundColor: '#FFC300',
-          height: Dimensions.get('screen').height / 13,
-          width: Dimensions.get('screen').width / 1.29,
-          //top: Dimensions.get('screen').height / 15,
-          //alignSelf: 'center',
-          justifyContent: 'center',
-          elevation: 5,
-
-          bottom: Dimensions.get('screen').height / 300,
-        }}>
-        <View style={{flexDirection: 'row'}}>
-          <View
-            style={{
+              flex: 1,
+              position: 'absolute',
               backgroundColor: 'white',
-              height: 45,
-              //elevation: 5,
-              width: Dimensions.get('screen').width / 1.4,
+              height: Dimensions.get('screen').height / 17,
+              width: Dimensions.get('screen').width / 1.3,
+              top: Dimensions.get('screen').height / 15,
+              alignSelf: 'center',
               justifyContent: 'center',
-              left: 15,
+              elevation: 10,
               borderRadius: 5,
             }}>
-            <TextInput
-              value={note}
-              onChangeText={text => setNote(text)}
-              placeholder="Add note"
-              placeholderTextColor="grey"
-              style={{
-                color: 'black',
-                fontSize: 15,
-                fontFamily: 'ErasMediumITC',
-              }}
-            />
+            <View style={{flexDirection: 'row'}}>
+              <View style={{justifyContent: 'center', marginHorizontal: 19.5}}>
+                <Icon2 name="upload-file" color={'black'} size={25} />
+              </View>
+              <View
+                style={{
+                  borderWidth: 0.5,
+                  height: 25,
+                  alignSelf: 'center',
+                }}></View>
+
+              <TouchableOpacity onPress={() => chooseFile('photo')}>
+                <Text
+                  style={{
+                    color: 'black',
+                    fontSize: 18,
+                    fontFamily: 'ErasMediumITC',
+                    //left: 25,
+                    marginHorizontal: 25,
+                    top: 3,
+                  }}>
+                  Upload Bill
+                </Text>
+              </TouchableOpacity>
+            </View>
           </View>
 
           <View
             style={{
-              position: 'absolute',
-              bottom: -7.5,
               justifyContent: 'center',
-              alignSelf: 'flex-end',
-              left: Dimensions.get('screen').width / 1.25,
+              alignSelf: 'center',
+              top: 105,
+              flexDirection: 'row',
             }}>
-            <Button
-              onPress={onSending}
-              title="Save"
-              buttonStyle={{
-                height: 60,
-                width: Dimensions.get('screen').width / 5.1,
-                backgroundColor: '#FFC300',
-              }}
-              titleStyle={{fontFamily: 'ErasMediumITC'}}
+            <View
+              style={{
+                borderWidth: 0.2,
+                borderColor: 'black',
+                width: 50,
+                height: 0.3,
+                alignSelf: 'center',
+                marginHorizontal: 10,
+              }}></View>
+            <Text style={{color: 'black', fontFamily: 'ErasMediumITC'}}>
+              Or
+            </Text>
+            <View
+              style={{
+                borderWidth: 0.2,
+                borderColor: 'black',
+                width: 50,
+                height: 0.3,
+                alignSelf: 'center',
+                marginHorizontal: 10,
+              }}></View>
+          </View>
+
+          <View
+            style={{
+              flex: 1,
+              position: 'absolute',
+              backgroundColor: 'white',
+              height: Dimensions.get('screen').height / 17,
+              width: Dimensions.get('screen').width / 1.3,
+              top: Dimensions.get('screen').height / 6,
+              alignSelf: 'center',
+              justifyContent: 'center',
+              elevation: 10,
+              borderRadius: 5,
+            }}>
+            <View style={{flexDirection: 'row'}}>
+              <View style={{justifyContent: 'center', marginHorizontal: 19.5}}>
+                <Icon name="camera-outline" color={'black'} size={25} />
+              </View>
+              <View
+                style={{
+                  borderWidth: 0.5,
+                  height: 25,
+                  alignSelf: 'center',
+                }}></View>
+
+              <TouchableOpacity onPress={() => captureImage('photo')}>
+                <Text
+                  style={{
+                    color: 'black',
+                    fontSize: 18,
+                    fontFamily: 'ErasMediumITC',
+                    //left: 25,
+                    marginHorizontal: 25,
+                    top: 3,
+                  }}>
+                  Take Photo
+                </Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+          <View
+            style={{
+              alignSelf: 'center',
+              position: 'absolute',
+              top: Dimensions.get('screen').height / 4.3,
+            }}>
+            <Text style={{color: 'black', fontSize: 11}}>{imgFile}</Text>
+          </View>
+
+          <View
+            style={{
+              flex: 1,
+              position: 'absolute',
+              backgroundColor: 'white',
+              height: Dimensions.get('screen').height / 17,
+              width: Dimensions.get('screen').width / 1.3,
+              top: Dimensions.get('screen').height / 3.5,
+              alignSelf: 'center',
+              justifyContent: 'center',
+              elevation: 10,
+              borderRadius: 5,
+            }}>
+            <View style={{flexDirection: 'row'}}>
+              <View style={{justifyContent: 'center', marginHorizontal: 25}}>
+                <Text
+                  style={{
+                    color: 'black',
+                    fontSize: 25,
+                    fontFamily: 'ErasMediumITC',
+                  }}>
+                  ₹
+                </Text>
+              </View>
+              <View
+                style={{
+                  borderWidth: 0.5,
+                  height: 25,
+                  alignSelf: 'center',
+                }}></View>
+              <TextInput
+                value={amt.toString()}
+                onChangeText={text => setAmt(text)}
+                placeholder="Amount"
+                placeholderTextColor="grey"
+                selectionColor="black"
+                keyboardType="number-pad"
+                maxLength={10}
+                style={{
+                  //borderWidth: 0.2,
+                  left: 20,
+                  width: Dimensions.get('screen').width / 1.7,
+                  color: 'black',
+                  fontSize: 18,
+                  fontFamily: 'ErasMediumITC',
+                  letterSpacing: 5,
+                }}
+              />
+            </View>
+          </View>
+          <View
+            style={{
+              flex: 1,
+              position: 'absolute',
+              backgroundColor: 'white',
+              height: Dimensions.get('screen').height / 17,
+              width: Dimensions.get('screen').width / 1.3,
+              top: Dimensions.get('screen').height / 2.8,
+              alignSelf: 'center',
+              justifyContent: 'center',
+              elevation: 10,
+              borderRadius: 5,
+            }}>
+            <View style={{flexDirection: 'row'}}>
+              <View style={{justifyContent: 'center', marginHorizontal: 12}}>
+                <Text
+                  style={{
+                    color: 'black',
+                    fontSize: 18,
+                    fontFamily: 'ErasMediumITC',
+                  }}>
+                  Date
+                </Text>
+              </View>
+              <View
+                style={{
+                  borderWidth: 0.5,
+                  height: 25,
+                  alignSelf: 'center',
+                }}></View>
+              <View style={{justifyContent: 'center', left: 20}}>
+                <TouchableOpacity onPress={onTigger}>
+                  <Text
+                    style={{
+                      color: 'grey',
+                      fontSize: 18,
+                      fontFamily: 'ErasMediumITC',
+                    }}>
+                    {date.toDateString('en-us')}
+                  </Text>
+                  {/* //toISOString().split('T')[0] */}
+                </TouchableOpacity>
+              </View>
+            </View>
+          </View>
+
+          <DatePicker
+            modal
+            mode="date"
+            date={date}
+            open={open}
+            onConfirm={date => {
+              setOpen(false);
+              setDate(date);
+            }}
+            maximumDate={new Date()}
+            onCancel={() => {
+              setOpen(false);
+            }}
+            theme="auto"
+            title="Select Date"
+            androidVariant="nativeAndroid"
+            locale="en-us"
+          />
+
+          <View
+            style={{
+              flex: 1,
+              position: 'absolute',
+              backgroundColor: '#FFC300',
+              height: Dimensions.get('screen').height / 13,
+              width: Dimensions.get('screen').width / 1.29,
+              //top: Dimensions.get('screen').height / 15,
+              //alignSelf: 'center',
+              justifyContent: 'center',
+              elevation: 5,
+
+              bottom: Dimensions.get('screen').height / 300,
+            }}>
+            <View style={{flexDirection: 'row'}}>
+              <View
+                style={{
+                  backgroundColor: 'white',
+                  height: 45,
+                  //elevation: 5,
+                  width: Dimensions.get('screen').width / 1.4,
+                  justifyContent: 'center',
+                  left: 15,
+                  borderRadius: 5,
+                }}>
+                <TextInput
+                  value={note}
+                  onChangeText={text => setNote(text)}
+                  placeholder="Add note"
+                  placeholderTextColor="grey"
+                  style={{
+                    color: 'black',
+                    fontSize: 15,
+                    fontFamily: 'ErasMediumITC',
+                  }}
+                />
+              </View>
+
+              <View
+                style={{
+                  position: 'absolute',
+                  bottom: -7.5,
+                  justifyContent: 'center',
+                  alignSelf: 'flex-end',
+                  left: Dimensions.get('screen').width / 1.25,
+                }}>
+                <Button
+                  onPress={onSending}
+                  title="Save"
+                  buttonStyle={{
+                    height: 60,
+                    width: Dimensions.get('screen').width / 5.1,
+                    backgroundColor: '#FFC300',
+                  }}
+                  titleStyle={{fontFamily: 'ErasMediumITC'}}
+                />
+              </View>
+            </View>
+          </View>
+        </>
+      ) : (
+        <View
+          style={{
+            backgroundColor: 'white',
+            elevation: 20,
+            height: 90,
+            width: 100,
+            alignSelf: 'center',
+            position: 'absolute',
+            top: Dimensions.get('screen').height / 4,
+            justifyContent: 'center',
+            borderRadius: 10,
+          }}>
+          <View style={{flexDirection: 'column'}}>
+            <Image
+              source={require('../CustScreen/assets/loading.gif')}
+              style={{height: 80, width: 100}}
+              resizeMode="contain"
             />
+            <View style={{alignSelf: 'center', top: -15}}>
+              <Text
+                style={{
+                  color: 'black',
+                  fontSize: 15,
+                  fontFamily: 'ErasMediumITC',
+                }}>
+                Loading...
+              </Text>
+            </View>
           </View>
         </View>
-      </View>
+      )}
     </>
   );
 };

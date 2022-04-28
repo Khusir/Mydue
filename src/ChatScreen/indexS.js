@@ -7,16 +7,55 @@ import {
   ScrollView,
   Linking,
 } from 'react-native';
-import React, {useLayoutEffect} from 'react';
+import React, {useLayoutEffect, useEffect, useState} from 'react';
 import Icon from 'react-native-vector-icons/Ionicons';
 import Icon2 from 'react-native-vector-icons/MaterialIcons';
 import moment from 'moment';
 import {Button} from 'react-native-elements';
 import Buttons from '../../components/Buttons';
 import History from '../../components/History';
+import {useSelector, useDispatch} from 'react-redux';
+import axios from 'axios';
+import {API_KEY} from 'react-native-dotenv';
+import {PAY_HISTORY} from '../../Redux/actionType';
 
 const ChatScreenS = ({route, navigation}) => {
   const ID = route?.params?.supplierId;
+  const user = useSelector(state => state.user_id);
+  const dispatch = useDispatch();
+  const pay = useSelector(state => state.payHistory);
+
+  const onPayHistory = async () => {
+    await axios
+      .post(`${API_KEY}/getTxnRecords`, {
+        user_id: `${user}`,
+        customer_supplier_id: `${ID}`,
+        payment_type: 'payment',
+      })
+      .then(response => {
+        console.log(response.data.data);
+        dispatch({
+          type: PAY_HISTORY,
+          payload: response.data.data,
+        });
+      })
+      .catch(e => e.message);
+  };
+
+  useEffect(() => {
+    onPayHistory();
+  }, []);
+
+  useEffect(() => {
+    const unsubscribe = navigation.addListener('focus', () => {
+      console.log('backed');
+      onPayHistory();
+    });
+    return () => {
+      unsubscribe;
+    };
+  }, [navigation]);
+
   useLayoutEffect(() => {
     navigation.setOptions({
       title: `${route?.params?.name}`,
@@ -89,7 +128,8 @@ const ChatScreenS = ({route, navigation}) => {
       ),
     });
   }, [navigation]);
-  console.log({ID: route.params.supplierId});
+  //console.log({ID: route.params.supplierId});
+  //console.log({halleu: pay?.[0].txn_date});
   return (
     <>
       <View
@@ -145,6 +185,8 @@ const ChatScreenS = ({route, navigation}) => {
         </View>
       </View>
       <History
+        payData={pay}
+        //timeStamp={pay?.[0].txn_date}
         viewStyle={styles.viewStyle}
         containerStyle={styles.containerStyle}
         timestampView={styles.timestampView}
@@ -163,6 +205,7 @@ const ChatScreenS = ({route, navigation}) => {
                 Cname: route?.params?.name,
                 Cnumber: route?.params?.number,
                 Cid: ID,
+                type: 'payment',
               })
             }
           />
@@ -176,7 +219,8 @@ const ChatScreenS = ({route, navigation}) => {
               navigation.navigate('Send', {
                 Cname: route?.params?.name,
                 Cnumber: route?.params?.number,
-                Cid: route?.params?.supplierId,
+                Cid: ID,
+                type: 'received',
               })
             }
           />
@@ -223,12 +267,14 @@ const styles = StyleSheet.create({
     //elevation: 0,
     width: Dimensions.get('screen').width / 4.5,
     marginHorizontal: 10,
-    height: 31,
+    height: 30,
+    top: 5,
   },
   timestampText: {
     color: 'black',
-    fontSize: 9,
+    fontSize: 8,
     textAlign: 'center',
+    //top: -3,
   },
   viewStyle1: {
     padding: 10,
